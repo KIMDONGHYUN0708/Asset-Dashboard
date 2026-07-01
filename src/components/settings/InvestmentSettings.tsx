@@ -16,7 +16,7 @@ const INST_BY_TYPE: Record<Investment['type'], string[]> = {
 const INST_LABEL: Record<Investment['type'], string> = {
   stock: '증권사', crypto: '거래소', gold: '구매처',
 };
-const SECTORS = ['IT/반도체', 'IT/플랫폼', '금융', '바이오', '에너지', '소비재', '가상자산', '금', '기타'];
+const SECTORS = ['IT/반도체', 'IT/플랫폼', '금융', '바이오', '에너지', 'ETF', '소비재', '가상자산', '금', '기타'];
 const COUNTRIES = [
   { code: 'kr', label: '🇰🇷 한국' },
   { code: 'us', label: '🇺🇸 미국' },
@@ -61,7 +61,7 @@ function StockSearchInput({
   const handleChange = (v: string) => {
     onChange(v);
     if (v.length >= 1) {
-      const found = searchStocks(v, type).slice(0, 8);
+      const found = searchStocks(v, type).slice(0, 15);
       setResults(found);
       setOpen(found.length > 0);
     } else {
@@ -81,7 +81,7 @@ function StockSearchInput({
         />
       </div>
       {open && results.length > 0 && (
-        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto">
           {results.map(s => (
             <button
               key={s.ticker}
@@ -159,7 +159,17 @@ export default function InvestmentSettings() {
   const deleteItem = (id: string) => setStore({ investments: investments.filter(i => i.id !== id) });
 
   const addItem = () => {
-    setStore({ investments: [...investments, { ...newItem, id: `inv-${Date.now()}` }] });
+    const txs: Transaction[] = (newItem.quantity > 0 && newItem.purchasePrice > 0)
+      ? [{ id: `tx-${Date.now()}`, date: newItem.purchaseDate, quantity: newItem.quantity, price: newItem.purchasePrice, note: '' }]
+      : [];
+    setStore({
+      investments: [...investments, {
+        ...newItem,
+        id: `inv-${Date.now()}`,
+        transactions: txs,
+        currentPrice: newItem.purchasePrice || 0,
+      }],
+    });
     setAdding(false);
     setNewItem(blank());
     setNewSearch('');
@@ -303,11 +313,18 @@ export default function InvestmentSettings() {
               </div>
             )}
 
-            {/* 자동 완성된 필드들 — 수정 가능 */}
-            {newItem.ticker && (
+            {/* 종목코드 — 주식·코인은 항상 노출 (자동완성 없으면 수동 입력) */}
+            {newItem.type !== 'gold' && (
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">종목코드 / 심볼</label>
-                <Input value={newItem.ticker} onChange={e => setNewItem(p => ({ ...p, ticker: e.target.value.toUpperCase() }))} />
+                <label className="text-xs text-slate-500 mb-1 block">
+                  종목코드 / 심볼
+                  {!newItem.ticker && <span className="text-slate-600 ml-1">— 직접 입력 가능</span>}
+                </label>
+                <Input
+                  value={newItem.ticker ?? ''}
+                  onChange={e => setNewItem(p => ({ ...p, ticker: e.target.value.toUpperCase() }))}
+                  placeholder={newItem.type === 'stock' ? '005930' : 'BTC'}
+                />
               </div>
             )}
             <div>
@@ -331,47 +348,75 @@ export default function InvestmentSettings() {
               </div>
             )}
 
-            {/* 현재가 + 시세 불러오기 */}
-            <div className="col-span-2 md:col-span-1">
+            {/* 수량 */}
+            <div>
               <label className="text-xs text-slate-500 mb-1 block">
-                현재가 ({newItem.type === 'gold' ? '원/돈' : '원'})
+                수량
+                <span className="text-slate-600 ml-1">
+                  {newItem.type === 'gold' ? '(돈)' : newItem.type === 'stock' ? '(주)' : '(개)'}
+                </span>
               </label>
-              <div className="flex gap-1.5">
-                <Input
-                  type="number"
-                  value={newItem.currentPrice || ''}
-                  onChange={e => setNewItem(p => ({ ...p, currentPrice: Number(e.target.value) }))}
-                  placeholder="0"
-                />
-                <button
-                  onClick={fetchNewPrice}
-                  disabled={priceFetching['__new__'] || !canFetchPrice(newItem.type, newItem.ticker ?? '', newItem.country ?? 'kr')}
-                  className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs rounded-lg hover:bg-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-                >
-                  {priceFetching['__new__'] ? <Loader2 size={11} className="animate-spin" /> : <RefreshCw size={11} />}
-                  시세 조회
-                </button>
-              </div>
-              {priceMsg['__new__'] && (
-                <p className={`text-xs mt-1 ${priceMsg['__new__'].startsWith('✓') ? 'text-emerald-400' : 'text-amber-400'}`}>
-                  {priceMsg['__new__']}
-                </p>
-              )}
+              <Input
+                type="number"
+                step="any"
+                value={newItem.quantity || ''}
+                onChange={e => setNewItem(p => ({ ...p, quantity: Number(e.target.value) }))}
+                placeholder="0"
+              />
+            </div>
+
+            {/* 매수 단가 */}
+            <div>
+              <label className="text-xs text-slate-500 mb-1 block">
+                매수 단가
+                <span className="text-slate-600 ml-1">
+                  ({newItem.type === 'gold' ? '원/돈' : '원'})
+                </span>
+              </label>
+              <Input
+                type="number"
+                value={newItem.purchasePrice || ''}
+                onChange={e => setNewItem(p => ({ ...p, purchasePrice: Number(e.target.value) }))}
+                placeholder="0"
+              />
+            </div>
+
+            {/* 매수일 */}
+            <div>
+              <label className="text-xs text-slate-500 mb-1 block">매수일</label>
+              <Input
+                type="date"
+                value={newItem.purchaseDate}
+                onChange={e => setNewItem(p => ({ ...p, purchaseDate: e.target.value }))}
+              />
             </div>
           </div>
 
-          <p className="text-xs text-slate-500 mt-3">
-            * 수량·매수가는 등록 후 종목 패널에서 매수이력으로 추가하세요. 평균단가가 자동 계산됩니다.
-          </p>
-          {newItem.type === 'crypto' && (
-            <p className="text-xs text-emerald-500/80 mt-1">BTC·ETH는 시세 자동 조회 가능. 다른 코인은 직접 입력.</p>
+          {/* 투자 금액 미리보기 */}
+          {newItem.quantity > 0 && newItem.purchasePrice > 0 && (
+            <div className="mt-3 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700/50 text-xs text-slate-400 flex items-center gap-2">
+              <span>총 투자금액</span>
+              <span className="text-white font-semibold tabular-nums">
+                {(newItem.quantity * newItem.purchasePrice).toLocaleString()}원
+              </span>
+              <span className="text-slate-600">
+                ({newItem.quantity.toLocaleString()}{newItem.type === 'gold' ? '돈' : newItem.type === 'stock' ? '주' : '개'} × {newItem.purchasePrice.toLocaleString()}원)
+              </span>
+            </div>
           )}
 
           <div className="flex gap-2 mt-3">
-            <button onClick={addItem} disabled={!newItem.name} className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50">
+            <button
+              onClick={addItem}
+              disabled={!newItem.name}
+              className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            >
               등록 완료
             </button>
-            <button onClick={() => { setAdding(false); setNewItem(blank()); setNewSearch(''); }} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-800">
+            <button
+              onClick={() => { setAdding(false); setNewItem(blank()); setNewSearch(''); }}
+              className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-800"
+            >
               취소
             </button>
           </div>
@@ -534,33 +579,58 @@ export default function InvestmentSettings() {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              {inv.country && <CountryFlag country={inv.country} size={15} />}
-                              <span className="text-sm font-medium text-white">{inv.name}</span>
-                              {inv.ticker && <span className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{inv.ticker}</span>}
-                              {inv.sector && <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">{inv.sector}</span>}
-                              {txs.length > 0 && (
-                                <span className="text-xs text-slate-500 bg-slate-700/60 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                  <List size={9} />{txs.length}회 매수
-                                </span>
-                              )}
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                {inv.country && <CountryFlag country={inv.country} size={15} />}
+                                <span className="text-sm font-medium text-white">{inv.name}</span>
+                                {inv.ticker && <span className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{inv.ticker}</span>}
+                                {inv.sector && <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">{inv.sector}</span>}
+                                {txs.length > 0 && (
+                                  <span className="text-xs text-slate-500 bg-slate-700/60 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                    <List size={9} />{txs.length}회 매수
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-slate-500 mt-0.5">
+                                {totalQty.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}
+                                {inv.type === 'stock' && ` · 평균 ${formatKRW(Math.round(avgPrice))} · 현재 ${formatKRW(inv.currentPrice)}`}
+                                {' · '}{inv.institution}
+                              </p>
                             </div>
-                            <p className="text-xs text-slate-500 mt-0.5">
-                              {totalQty.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}
-                              {' · '}평균 {formatKRW(Math.round(avgPrice))}
-                              {' · '}현재 {formatKRW(inv.currentPrice)}
-                              {' · '}{inv.institution}
-                            </p>
+                            <div className="text-right">
+                              <p className="text-sm font-semibold text-white">{formatKRW(currentValue)}</p>
+                              <p className={`text-xs font-medium ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {profit >= 0 ? <TrendingUp size={11} className="inline mr-0.5" /> : <TrendingDown size={11} className="inline mr-0.5" />}
+                                {profit >= 0 ? '+' : ''}{formatKRW(profit)} ({formatPercent(roi)})
+                              </p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-sm font-semibold text-white">{formatKRW(currentValue)}</p>
-                            <p className={`text-xs font-medium ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                              {profit >= 0 ? <TrendingUp size={11} className="inline mr-0.5" /> : <TrendingDown size={11} className="inline mr-0.5" />}
-                              {profit >= 0 ? '+' : ''}{formatKRW(profit)} ({formatPercent(roi)})
-                            </p>
-                          </div>
+
+                          {/* 가상자산·금 전용 — 단위 가격 비교 */}
+                          {(inv.type === 'crypto' || inv.type === 'gold') && avgPrice > 0 && inv.currentPrice > 0 && (
+                            <div className="mt-2 flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-700/30 border border-slate-700/40 text-xs">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-slate-500">매수가</span>
+                                <span className="text-slate-300 font-medium tabular-nums">{formatKRW(Math.round(avgPrice))}</span>
+                                {inv.type === 'gold' && <span className="text-slate-600">/돈</span>}
+                              </div>
+                              <span className="text-slate-600">→</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-slate-500">현재 시세</span>
+                                <span className="text-white font-semibold tabular-nums">{formatKRW(inv.currentPrice)}</span>
+                                {inv.type === 'gold' && <span className="text-slate-500">/돈</span>}
+                              </div>
+                              <div className={`ml-auto flex items-center gap-1 font-semibold tabular-nums ${roi >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {roi >= 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                                {roi >= 0 ? '+' : ''}{roi.toFixed(1)}%
+                                <span className="font-normal text-slate-500 ml-0.5">
+                                  ({roi >= 0 ? '+' : ''}{formatKRW(inv.currentPrice - Math.round(avgPrice))}/단위)
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

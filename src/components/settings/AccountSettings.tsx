@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import Image from 'next/image';
 import { useAssetStore } from '@/lib/store';
 import { Account, AssetCategory } from '@/lib/types';
 import { formatKRWFull, CATEGORY_LABEL } from '@/lib/utils';
@@ -55,9 +54,13 @@ function InstitutionLogo({ name }: { name: string }) {
   const logo = LOGO_MAP[name];
   if (logo) {
     return (
-      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0 p-0.5">
-        <Image src={logo} alt={name} width={26} height={26} className="object-contain" />
-      </div>
+      <img
+        src={logo}
+        alt={name}
+        width={32}
+        height={32}
+        className="w-8 h-8 flex-shrink-0"
+      />
     );
   }
   const fb = BRAND_FALLBACK[name];
@@ -65,7 +68,7 @@ function InstitutionLogo({ name }: { name: string }) {
   const color = fb?.text ?? '#fff';
   const short = fb?.short ?? name.slice(0, 2);
   return (
-    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: bg }}>
+    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: bg }}>
       <span className="text-[9px] font-bold leading-none" style={{ color }}>{short}</span>
     </div>
   );

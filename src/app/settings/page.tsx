@@ -1,7 +1,7 @@
 'use client';
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Wallet, Landmark, TrendingUp, Car, Shield, History, Key, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Wallet, Landmark, TrendingUp, Car, Shield, History, Key, CheckCircle2, ArrowRight, RotateCcw } from 'lucide-react';
 import { useAssetStore } from '@/lib/store';
 import CashSettings from '@/components/settings/CashSettings';
 import AccountSettings from '@/components/settings/AccountSettings';
@@ -126,6 +126,29 @@ function SettingsContent() {
           </button>
         </div>
       )}
+
+      {/* 데이터 초기화 */}
+      <div className="border-t border-slate-800/60 pt-5 mt-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-500">데이터 초기화</p>
+            <p className="text-xs text-slate-700 mt-0.5">모든 자산 데이터와 동기화 키를 삭제하고 처음 상태로 돌아갑니다.</p>
+          </div>
+          <button
+            onClick={() => {
+              if (window.confirm('모든 자산 데이터가 영구 삭제됩니다.\n정말 초기화하시겠습니까?')) {
+                localStorage.removeItem('asset-dashboard-store');
+                localStorage.removeItem('asd-uuid');
+                window.location.href = '/';
+              }
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-500/70 text-sm rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors flex-shrink-0 ml-6"
+          >
+            <RotateCcw size={13} />
+            초기화
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

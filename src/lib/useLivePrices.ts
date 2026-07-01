@@ -14,7 +14,7 @@ export interface LivePriceResult {
 const REFRESH_MS = 30_000;
 
 // 한국 주식 티커는 4~6자리 숫자 (005930, 411060 등)
-// 미국 주식은 알파벳 티커 (TSLA, NFLX, QQQ 등) — country 필드보다 ticker 형식이 신뢰도 높음
+// 미국 주식은 알파벳 티커 (TSLA, NFLX 등) — country 필드보다 ticker 형식이 신뢰도 높음
 const isKoreanTicker = (ticker: string) => /^\d{4,6}$/.test(ticker);
 
 export function useLivePrices(): LivePriceResult {
@@ -28,25 +28,32 @@ export function useLivePrices(): LivePriceResult {
     try {
       const investments = getInvestments();
 
-      // 한국 주식: 티커가 숫자 형식 → KIS 국내 API
+      // 가상자산: type=crypto인 모든 티커 → Upbit 동적 조회
+      const cryptoTickers = [...new Set(
+        investments.filter(i => i.type === 'crypto' && i.ticker).map(i => i.ticker!)
+      )];
+
+      // 한국 주식: 숫자 티커 → KIS 국내 API
       const koTickers = investments
         .filter(i => i.type === 'stock' && i.ticker && isKoreanTicker(i.ticker!))
         .map(i => i.ticker!);
 
-      // 미국 주식: 티커가 알파벳 형식 → KIS 해외 API (country 무관)
+      // 미국 주식: 알파벳 티커 → KIS 해외 API
       const usTickers = investments
         .filter(i => i.type === 'stock' && i.ticker && !isKoreanTicker(i.ticker!))
         .map(i => i.ticker!);
 
+      // 가상자산 + 금 동시 조회
+      const cryptoParam = cryptoTickers.length > 0 ? `?tickers=${cryptoTickers.join(',')}` : '';
       const [cryptoRes, goldRes] = await Promise.all([
-        fetch('/api/prices/crypto'),
+        fetch(`/api/prices/crypto${cryptoParam}`),
         fetch('/api/prices/gold'),
       ]);
       if (!cryptoRes.ok || !goldRes.ok) throw new Error('API error');
 
       const [cryptoData, goldData] = await Promise.all([cryptoRes.json(), goldRes.json()]);
 
-      // 한국 주식 (KIS)
+      // 한국 주식 (KIS 국내)
       let stockData: { prices?: Record<string, { price: number; changeRate: number }> } = {};
       if (koTickers.length > 0) {
         try {
@@ -55,35 +62,33 @@ export function useLivePrices(): LivePriceResult {
         } catch { /* KIS 실패는 무시 */ }
       }
 
-      // 미국 주식 (Yahoo Finance)
+      // 미국 주식 (KIS 해외)
       let usStockData: { prices?: Record<string, { priceKrw: number; changeRate: number }> } = {};
       if (usTickers.length > 0) {
         try {
           const res = await fetch(`/api/prices/us-stocks?tickers=${usTickers.join(',')}`);
           if (res.ok) usStockData = await res.json();
-        } catch { /* Yahoo Finance 실패는 무시 */ }
+        } catch { /* 실패 무시 */ }
       }
 
-      // 최신 investments 다시 읽기 (stale closure 방지)
+      // stale closure 방지: 최신 investments 다시 읽기
       const latest = getInvestments();
       const updated = latest.map(inv => {
-        // 가상자산
-        if (inv.ticker === 'BTC' && cryptoData?.BTC) {
-          return { ...inv, currentPrice: Math.round(cryptoData.BTC.price), dailyChangeRate: +cryptoData.BTC.changeRate.toFixed(2) };
-        }
-        if (inv.ticker === 'ETH' && cryptoData?.ETH) {
-          return { ...inv, currentPrice: Math.round(cryptoData.ETH.price), dailyChangeRate: +cryptoData.ETH.changeRate.toFixed(2) };
+        // 가상자산 — BTC/ETH 포함 등록된 모든 코인
+        if (inv.type === 'crypto' && inv.ticker && cryptoData?.[inv.ticker]) {
+          const c = cryptoData[inv.ticker];
+          return { ...inv, currentPrice: Math.round(c.price), dailyChangeRate: +c.changeRate.toFixed(2) };
         }
         // 금 — currentPrice = 원/돈 (3.75g)
         if (inv.type === 'gold' && goldData?.pricePerDon) {
           return { ...inv, currentPrice: Math.round(goldData.pricePerDon) };
         }
-        // 한국 주식 (KIS)
+        // 한국 주식 (KIS 국내)
         if (inv.type === 'stock' && inv.ticker && stockData?.prices?.[inv.ticker]) {
           const s = stockData.prices[inv.ticker];
           return { ...inv, currentPrice: s.price, dailyChangeRate: +s.changeRate.toFixed(2) };
         }
-        // 미국 주식 (Yahoo Finance — KRW 변환 포함)
+        // 미국 주식 (KIS 해외, KRW 변환 포함)
         if (inv.type === 'stock' && inv.ticker && usStockData?.prices?.[inv.ticker]) {
           const s = usStockData.prices[inv.ticker];
           return { ...inv, currentPrice: s.priceKrw, dailyChangeRate: +s.changeRate.toFixed(2) };

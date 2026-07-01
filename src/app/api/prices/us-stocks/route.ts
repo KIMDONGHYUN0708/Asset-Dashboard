@@ -17,9 +17,9 @@ const EXCHANGE_MAP: Record<string, string> = {
   NFLX: 'NAS', COST: 'NAS', DDOG: 'NAS', NET: 'NAS',
   MDB: 'NAS', WDAY: 'NAS', CRWD: 'NAS', NOW: 'NAS',
   ADBE: 'NAS', INTU: 'NAS', PYPL: 'NAS',
-  ISRG: 'NAS', BKNG: 'NAS', SHOP: 'NAS', COIN: 'NAS',
-  QQQ: 'NAS', JEPQ: 'NAS', TQQQ: 'NAS',
-  SBUX: 'NAS',
+  ISRG: 'NAS', BKNG: 'NAS', COIN: 'NAS',
+  QQQ: 'NAS', JEPQ: 'NAS', TQQQ: 'NAS', QQQM: 'NAS',
+  SBUX: 'NAS', ABNB: 'NAS', MRNA: 'NAS', PANW: 'NAS',
   // NYSE / NYSE Arca (ETF 포함)
   SPY: 'NYS', VOO: 'NYS', SCHD: 'NYS', IVV: 'NYS',
   GLD: 'NYS', IAU: 'NYS', GDX: 'NYS',
@@ -29,6 +29,13 @@ const EXCHANGE_MAP: Record<string, string> = {
   SSO: 'NYS', FNGU: 'NYS',
   NKE: 'NYS', MCD: 'NYS', CAT: 'NYS',
   T: 'NYS', VZ: 'NYS', O: 'NYS', AMT: 'NYS',
+  // NYSE 개별 종목
+  TSM: 'NYS', JPM: 'NYS', V: 'NYS', MA: 'NYS',
+  XOM: 'NYS', JNJ: 'NYS', LLY: 'NYS', UNH: 'NYS', PFE: 'NYS',
+  'BRK-B': 'NYS', WMT: 'NYS', DIS: 'NYS',
+  CRM: 'NYS', ORCL: 'NYS', UBER: 'NYS',
+  CPNG: 'NYS', SQ: 'NYS', SPOT: 'NYS',
+  PLTR: 'NYS', SNOW: 'NYS', CVX: 'NYS', SHOP: 'NYS',
 };
 
 let tokenCache: { token: string; expiresAt: number } | null = null;

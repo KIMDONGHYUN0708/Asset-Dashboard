@@ -109,9 +109,14 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   {r.inv.country && <CountryFlag country={r.inv.country} size={13} />}
                   <div className="min-w-0">
-                    <p className={`text-[13px] font-semibold truncate ${style ? style.text : isUp ? 'text-slate-200' : 'text-slate-400'}`}>
-                      {r.inv.name}
-                    </p>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className={`text-[13px] font-semibold truncate ${style ? style.text : isUp ? 'text-slate-200' : 'text-slate-400'}`}>
+                        {r.inv.name}
+                      </p>
+                      {r.inv.accountType === 'pension' && (
+                        <span className="text-[9px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1 py-0.5 rounded font-medium flex-shrink-0">연금</span>
+                      )}
+                    </div>
                     <p className="text-[10px] text-slate-600 mt-0.5">
                       {r.inv.institution} · {r.holdingDays}일 보유
                     </p>

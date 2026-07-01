@@ -13,9 +13,10 @@ export interface LivePriceResult {
 
 const REFRESH_MS = 30_000;
 
-// 한국 주식 티커는 4~6자리 숫자 (005930, 411060 등)
-// 미국 주식은 알파벳 티커 (TSLA, NFLX 등) — country 필드보다 ticker 형식이 신뢰도 높음
-const isKoreanTicker = (ticker: string) => /^\d{4,6}$/.test(ticker);
+// 한국 주식 티커: 4~6자리 숫자 (005930) 또는 KRX 특수 형식 (0064K0 — 숫자4+영문1+숫자1)
+// 미국 주식은 알파벳 티커 (TSLA, NFLX 등)
+const isKoreanTicker = (ticker: string) =>
+  /^\d{4,6}$/.test(ticker) || /^\d{4}[A-Z]\d$/.test(ticker);
 
 export function useLivePrices(): LivePriceResult {
   const setStore = useAssetStore(s => s.setStore);

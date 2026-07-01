@@ -86,13 +86,17 @@ async function fetchKISOverseaPrice(ticker: string, excd: string, token: string)
 
 async function fetchWithFallback(ticker: string, token: string) {
   const primary = EXCHANGE_MAP[ticker] ?? 'NAS';
-  try {
-    return await fetchKISOverseaPrice(ticker, primary, token);
-  } catch {
-    // primary 실패 시 NAS↔NYS 교차 시도
-    const fallback = primary === 'NAS' ? 'NYS' : 'NAS';
-    return await fetchKISOverseaPrice(ticker, fallback, token);
+  // primary → 나머지 2개 순서로 모두 시도 (NAS/NYS/AMS 교차)
+  const order = [primary, ...(['NAS', 'NYS', 'AMS'] as const).filter(e => e !== primary)];
+  let lastErr: unknown;
+  for (const excd of order) {
+    try {
+      return await fetchKISOverseaPrice(ticker, excd, token);
+    } catch (e) {
+      lastErr = e;
+    }
   }
+  throw lastErr;
 }
 
 async function fetchUSDKRW(): Promise<number> {

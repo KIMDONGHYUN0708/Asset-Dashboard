@@ -53,6 +53,7 @@ export interface Investment {
   ticker?: string;
   sector?: string;
   country?: string;
+  accountType?: 'pension';  // 연금저축 계좌 구분, undefined = 일반
   transactions?: Transaction[];
   quantity: number;
   purchasePrice: number;

@@ -4,7 +4,7 @@ import { useAssetStore } from '@/lib/store';
 import { Investment, Transaction } from '@/lib/types';
 import { formatKRW, formatPercent, calcInvestmentStats } from '@/lib/utils';
 import SettingsShell, { Input, Select, DeleteButton } from './SettingsShell';
-import { Plus, TrendingUp, TrendingDown, ChevronDown, ChevronUp, List, Search, Loader2, Check, RefreshCw } from 'lucide-react';
+import { Plus, TrendingUp, TrendingDown, ChevronDown, ChevronUp, List, Search, Loader2, Check, RefreshCw, ArrowUp, ArrowDown } from 'lucide-react';
 import CountryFlag from '@/components/CountryFlag';
 import { searchStocks, StockItem } from '@/lib/stockList';
 
@@ -157,6 +157,20 @@ export default function InvestmentSettings() {
     setEditing(p => ({ ...p, [id]: { ...p[id], [field]: value } }));
 
   const deleteItem = (id: string) => setStore({ investments: investments.filter(i => i.id !== id) });
+
+  const moveInvestment = (id: string, dir: 'up' | 'down') => {
+    const inv = investments.find(i => i.id === id);
+    if (!inv) return;
+    const sameType = investments.filter(i => i.type === inv.type);
+    const idx = sameType.findIndex(i => i.id === id);
+    const swapIdx = dir === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= sameType.length) return;
+    const result = [...investments];
+    const ai = result.findIndex(i => i.id === id);
+    const bi = result.findIndex(i => i.id === sameType[swapIdx].id);
+    [result[ai], result[bi]] = [result[bi], result[ai]];
+    setStore({ investments: result });
+  };
 
   const addItem = () => {
     const txs: Transaction[] = (newItem.quantity > 0 && newItem.purchasePrice > 0)
@@ -334,6 +348,13 @@ export default function InvestmentSettings() {
               </Select>
             </div>
             <div>
+              <label className="text-xs text-slate-500 mb-1 block">계좌 구분</label>
+              <Select value={newItem.accountType ?? ''} onChange={e => setNewItem(p => ({ ...p, accountType: e.target.value === 'pension' ? 'pension' : undefined }))}>
+                <option value="">일반 계좌</option>
+                <option value="pension">연금저축 계좌</option>
+              </Select>
+            </div>
+            <div>
               <label className="text-xs text-slate-500 mb-1 block">{INST_LABEL[newItem.type]}</label>
               <Select value={newItem.institution ?? ''} onChange={e => setNewItem(p => ({ ...p, institution: e.target.value }))}>
                 {INST_BY_TYPE[newItem.type].map(i => <option key={i}>{i}</option>)}
@@ -431,7 +452,7 @@ export default function InvestmentSettings() {
           <div key={key} className="mb-5">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">{label}</p>
             <div className="space-y-2">
-              {items.map(inv => {
+              {items.map((inv, itemIdx) => {
                 const ed = editing[inv.id];
                 const cur = ed ?? inv;
                 const { avgPrice, totalQty, totalInvested } = calcInvestmentStats(cur);
@@ -468,6 +489,13 @@ export default function InvestmentSettings() {
                               <label className="text-xs text-slate-500 mb-0.5 block">{INST_LABEL[inv.type]}</label>
                               <Select value={ed.institution ?? ''} onChange={e => updateEdit(inv.id, 'institution', e.target.value)}>
                                 {INST_BY_TYPE[inv.type].map(i => <option key={i}>{i}</option>)}
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="text-xs text-slate-500 mb-0.5 block">계좌 구분</label>
+                              <Select value={ed.accountType ?? ''} onChange={e => updateEdit(inv.id, 'accountType', e.target.value === 'pension' ? 'pension' : undefined)}>
+                                <option value="">일반 계좌</option>
+                                <option value="pension">연금저축 계좌</option>
                               </Select>
                             </div>
                             {inv.type === 'stock' && (
@@ -581,10 +609,13 @@ export default function InvestmentSettings() {
                       ) : (
                         <div>
                           <div className="flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 {inv.country && <CountryFlag country={inv.country} size={15} />}
                                 <span className="text-sm font-medium text-white">{inv.name}</span>
+                                {inv.accountType === 'pension' && (
+                                  <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded font-medium">연금저축</span>
+                                )}
                                 {inv.ticker && <span className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{inv.ticker}</span>}
                                 {inv.sector && <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">{inv.sector}</span>}
                                 {txs.length > 0 && (
@@ -599,12 +630,30 @@ export default function InvestmentSettings() {
                                 {' · '}{inv.institution}
                               </p>
                             </div>
-                            <div className="text-right">
-                              <p className="text-sm font-semibold text-white">{formatKRW(currentValue)}</p>
-                              <p className={`text-xs font-medium ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                                {profit >= 0 ? <TrendingUp size={11} className="inline mr-0.5" /> : <TrendingDown size={11} className="inline mr-0.5" />}
-                                {profit >= 0 ? '+' : ''}{formatKRW(profit)} ({formatPercent(roi)})
-                              </p>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <div className="text-right">
+                                <p className="text-sm font-semibold text-white">{formatKRW(currentValue)}</p>
+                                <p className={`text-xs font-medium ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                  {profit >= 0 ? <TrendingUp size={11} className="inline mr-0.5" /> : <TrendingDown size={11} className="inline mr-0.5" />}
+                                  {profit >= 0 ? '+' : ''}{formatKRW(profit)} ({formatPercent(roi)})
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-0.5" onClick={e => e.stopPropagation()}>
+                                <button
+                                  onClick={() => moveInvestment(inv.id, 'up')}
+                                  disabled={itemIdx === 0}
+                                  className="p-1 text-slate-600 hover:text-white hover:bg-slate-700 rounded disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                                >
+                                  <ArrowUp size={11} />
+                                </button>
+                                <button
+                                  onClick={() => moveInvestment(inv.id, 'down')}
+                                  disabled={itemIdx === items.length - 1}
+                                  className="p-1 text-slate-600 hover:text-white hover:bg-slate-700 rounded disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                                >
+                                  <ArrowDown size={11} />
+                                </button>
+                              </div>
                             </div>
                           </div>
 

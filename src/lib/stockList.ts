@@ -126,7 +126,7 @@ export const STOCK_LIST: StockItem[] = [
   { name: 'TIGER 미국S&P500',            ticker: '360750', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'KODEX 미국나스닥100TR',       ticker: '379810', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'ACE 미국나스닥100',           ticker: '367380', sector: 'ETF', country: 'kr', market: 'ETF' },
-  { name: 'KODEX 금액티브 (Gold)',           ticker: '411060', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'KODEX 금액티브 (Gold)',           ticker: '0064K0', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'KODEX 골드선물(H)',               ticker: '132030', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'TIGER 금은선물(H)',               ticker: '284430', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'TIGER 미국나스닥100레버리지(합성)', ticker: '438320', sector: 'ETF', country: 'kr', market: 'ETF' },

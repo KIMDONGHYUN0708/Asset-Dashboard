@@ -12,10 +12,10 @@ export function formatKRW(amount: number): string {
     return `${eok % 1 === 0 ? eok.toFixed(0) : eok.toFixed(1)}억`;
   }
   if (Math.abs(amount) >= 10_000) {
-    const man = amount / 10_000;
-    return `${man % 1 === 0 ? man.toFixed(0) : man.toFixed(0)}만`;
+    const man = Math.round(amount / 10_000);
+    return `${man.toLocaleString()}만`;
   }
-  return `${amount.toLocaleString()}원`;
+  return `${Math.round(amount).toLocaleString()}원`;
 }
 
 export function formatKRWFull(amount: number): string {

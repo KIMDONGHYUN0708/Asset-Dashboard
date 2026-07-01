@@ -93,8 +93,8 @@ export const mockStore: AssetStore = {
     },
   ],
 
-  cars: [
-    { id: 'car1', model: '현대 아반떼 CN7', year: 2022, purchasePrice: 22_500_000, currentValue: 17_800_000, purchaseDate: '2022-03-15' },
+  physicalAssets: [
+    { id: 'car1', category: 'car' as const, name: '현대 아반떼 CN7', year: 2022, purchasePrice: 22_500_000, currentValue: 17_800_000, purchaseDate: '2022-03-15' },
   ],
 
   history: [

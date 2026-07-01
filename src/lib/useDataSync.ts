@@ -44,7 +44,7 @@ export async function saveToCloud(uuid: string): Promise<boolean> {
       cash: state.cash,
       accounts: state.accounts,
       investments: state.investments,
-      cars: state.cars,
+      physicalAssets: state.physicalAssets,
       depositAmount: state.depositAmount,
       history: state.history,
       annualSnapshots: state.annualSnapshots ?? [],
@@ -68,7 +68,7 @@ export function useDataSync() {
   const accounts     = useAssetStore(s => s.accounts);
   const cash         = useAssetStore(s => s.cash);
   const depositAmount = useAssetStore(s => s.depositAmount);
-  const cars         = useAssetStore(s => s.cars);
+  const physicalAssets = useAssetStore(s => s.physicalAssets);
 
   const scheduleSave = useCallback(() => {
     const uuid = getStoredUUID();
@@ -80,5 +80,5 @@ export function useDataSync() {
   useEffect(() => {
     scheduleSave();
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [investments, accounts, cash, depositAmount, cars]);
+  }, [investments, accounts, cash, depositAmount, physicalAssets]);
 }

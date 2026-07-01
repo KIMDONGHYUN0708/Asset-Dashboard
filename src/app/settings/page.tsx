@@ -1,12 +1,12 @@
 'use client';
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Wallet, Landmark, TrendingUp, Car, Shield, History, Key, CheckCircle2, ArrowRight, RotateCcw } from 'lucide-react';
+import { Wallet, Landmark, TrendingUp, Package, Shield, History, Key, CheckCircle2, ArrowRight, RotateCcw } from 'lucide-react';
 import { useAssetStore } from '@/lib/store';
 import CashSettings from '@/components/settings/CashSettings';
 import AccountSettings from '@/components/settings/AccountSettings';
 import InvestmentSettings from '@/components/settings/InvestmentSettings';
-import CarSettings from '@/components/settings/CarSettings';
+import PhysicalAssetSettings from '@/components/settings/PhysicalAssetSettings';
 import PensionInsuranceSettings from '@/components/settings/PensionInsuranceSettings';
 import AnnualSnapshotSettings from '@/components/settings/AnnualSnapshotSettings';
 import DataKeySetupPanel from '@/components/DataKeySetupPanel';
@@ -15,7 +15,7 @@ const TABS = [
   { key: 'cash',    label: '현금·보증금',   icon: Wallet },
   { key: 'account', label: '계좌·적금·대출', icon: Landmark },
   { key: 'invest',  label: '투자 자산',       icon: TrendingUp },
-  { key: 'car',     label: '자동차',          icon: Car },
+  { key: 'physical', label: '실물 자산',        icon: Package },
   { key: 'pension', label: '연금·보험',       icon: Shield },
   { key: 'history', label: '연도별 기록',     icon: History },
   { key: 'sync',    label: '데이터 동기화',   icon: Key },
@@ -27,8 +27,8 @@ function SettingsContent() {
   const searchParams  = useSearchParams();
   const isOnboarding  = searchParams.get('onboarding') === '1';
 
-  const { isOnboarded, setOnboarded, cash, accounts, investments, cars, depositAmount } = useAssetStore();
-  const hasData = cash > 0 || accounts.length > 0 || investments.length > 0 || cars.length > 0 || depositAmount > 0;
+  const { isOnboarded, setOnboarded, cash, accounts, investments, physicalAssets, depositAmount } = useAssetStore();
+  const hasData = cash > 0 || accounts.length > 0 || investments.length > 0 || physicalAssets.length > 0 || depositAmount > 0;
 
   const [tab, setTab] = useState<TabKey>('cash');
 
@@ -63,8 +63,8 @@ function SettingsContent() {
                 <span className={`px-2 py-1 rounded-lg border ${investments.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
                   {investments.length > 0 ? '✓' : '○'} 투자 자산
                 </span>
-                <span className={`px-2 py-1 rounded-lg border ${cars.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
-                  {cars.length > 0 ? '✓' : '○'} 자동차 (선택)
+                <span className={`px-2 py-1 rounded-lg border ${physicalAssets.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
+                  {physicalAssets.length > 0 ? '✓' : '○'} 실물 자산 (선택)
                 </span>
               </div>
             </div>
@@ -108,7 +108,7 @@ function SettingsContent() {
         {tab === 'cash'    && <CashSettings />}
         {tab === 'account' && <AccountSettings />}
         {tab === 'invest'  && <InvestmentSettings />}
-        {tab === 'car'     && <CarSettings />}
+        {tab === 'physical' && <PhysicalAssetSettings />}
         {tab === 'pension' && <PensionInsuranceSettings />}
         {tab === 'history' && <AnnualSnapshotSettings />}
         {tab === 'sync'    && <DataKeySetupPanel />}

@@ -11,6 +11,19 @@ export type AssetCategory =
   | 'pension'
   | 'insurance';
 
+export type PhysicalAssetCategory = 'car' | 'sneakers' | 'lp' | 'watch' | 'etc';
+
+export interface PhysicalAsset {
+  id: string;
+  category: PhysicalAssetCategory;
+  name: string;
+  year?: number;
+  purchasePrice: number;
+  currentValue: number;
+  purchaseDate: string;
+  memo?: string;
+}
+
 export interface Account {
   id: string;
   institution: string;
@@ -100,7 +113,7 @@ export interface AssetStore {
   cash: number;
   accounts: Account[];
   investments: Investment[];
-  cars: Car[];
+  physicalAssets: PhysicalAsset[];
   depositAmount: number;
   history: MonthlySnapshot[];
   annualSnapshots: AnnualSnapshot[];

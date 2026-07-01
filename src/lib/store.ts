@@ -1,7 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { AssetStore, MonthlySnapshot, SnapshotInvestment } from './types';
+import { AssetStore, MonthlySnapshot, SnapshotInvestment, PhysicalAsset } from './types';
 import { buildBreakdown, calcTotalAssets, calcInvestmentStats } from './utils';
 
 /** 신규 사용자 기본 상태 — 더미 데이터 없음 */
@@ -9,7 +9,7 @@ const emptyStore: AssetStore = {
   cash: 0,
   accounts: [],
   investments: [],
-  cars: [],
+  physicalAssets: [],
   depositAmount: 0,
   history: [],
   annualSnapshots: [],
@@ -91,15 +91,33 @@ export const useAssetStore = create<AppState>()(
     }),
     {
       name: 'asset-dashboard-store',
-      version: 4,
+      version: 5,
       migrate: (persisted: any, version: number) => {
-        // v3 이하 기존 사용자 → 데이터 유지 + isOnboarded: true
+        const carsToPhysical = (cars: any[]): PhysicalAsset[] =>
+          (cars ?? []).map((c: any) => ({
+            id: c.id,
+            category: 'car' as const,
+            name: c.model ?? '',
+            year: c.year,
+            purchasePrice: c.purchasePrice,
+            currentValue: c.currentValue,
+            purchaseDate: c.purchaseDate,
+          }));
+
         if (version <= 3) {
           return {
             ...emptyStore,
             ...persisted,
             isOnboarded: true,
             annualSnapshots: persisted.annualSnapshots ?? [],
+            physicalAssets: carsToPhysical(persisted.cars),
+          };
+        }
+        if (version === 4) {
+          return {
+            ...emptyStore,
+            ...persisted,
+            physicalAssets: persisted.physicalAssets ?? carsToPhysical(persisted.cars),
           };
         }
         return { ...emptyStore, ...persisted };

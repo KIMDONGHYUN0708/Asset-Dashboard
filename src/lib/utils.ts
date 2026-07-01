@@ -68,7 +68,7 @@ export function normalizeInvestment(inv: Investment): Investment {
 export const CATEGORY_LABEL: Record<AssetCategory, string> = {
   cash: '현금', stock: '주식', crypto: '가상자산', gold: '금',
   account: '계좌', savings: '적금', loan: '대출', deposit: '보증금',
-  car: '자동차', pension: '연금저축', insurance: '보험',
+  car: '실물 자산', pension: '연금저축', insurance: '보험',
 };
 
 export const CATEGORY_COLOR: Record<AssetCategory, string> = {
@@ -84,8 +84,8 @@ export function calcTotalAssets(store: AssetStore): number {
     const { totalQty } = calcInvestmentStats(inv);
     return s + inv.currentPrice * totalQty;
   }, 0);
-  const carSum = store.cars.reduce((s, c) => s + c.currentValue, 0);
-  return store.cash + accountSum - loanSum + investSum + store.depositAmount + carSum;
+  const physicalSum = (store.physicalAssets ?? []).reduce((s, a) => s + a.currentValue, 0);
+  return store.cash + accountSum - loanSum + investSum + store.depositAmount + physicalSum;
 }
 
 export function buildBreakdown(store: AssetStore) {
@@ -104,6 +104,6 @@ export function buildBreakdown(store: AssetStore) {
     insurance: store.accounts.filter(a => a.category === 'insurance').reduce((s, a) => s + a.amount, 0),
     loan: store.accounts.filter(a => a.category === 'loan').reduce((s, a) => s + a.amount, 0),
     deposit: store.depositAmount,
-    car: store.cars.reduce((s, c) => s + c.currentValue, 0),
+    car: (store.physicalAssets ?? []).reduce((s, a) => s + a.currentValue, 0),
   };
 }

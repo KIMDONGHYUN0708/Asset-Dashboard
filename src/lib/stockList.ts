@@ -78,6 +78,8 @@ export const STOCK_LIST: StockItem[] = [
   { name: '삼성중공업',         ticker: '010140', sector: '기타',        country: 'kr', market: 'KOSPI' },
   { name: '코스모화학',         ticker: '005420', sector: '에너지',      country: 'kr', market: 'KOSPI' },
   { name: '한국타이어앤테크놀로지', ticker: '161390', sector: '소비재',  country: 'kr', market: 'KOSPI' },
+  { name: '한미반도체',           ticker: '042700', sector: 'IT/반도체',   country: 'kr', market: 'KOSPI' },
+  { name: '두산로보틱스',         ticker: '454910', sector: 'IT/반도체',   country: 'kr', market: 'KOSPI' },
 
   // ── KOSDAQ ──────────────────────────────────────────────────────────────
   { name: '에코프로비엠',       ticker: '247540', sector: '에너지',      country: 'kr', market: 'KOSDAQ' },
@@ -124,8 +126,12 @@ export const STOCK_LIST: StockItem[] = [
   { name: 'TIGER 미국S&P500',            ticker: '360750', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'KODEX 미국나스닥100TR',       ticker: '379810', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'ACE 미국나스닥100',           ticker: '367380', sector: 'ETF', country: 'kr', market: 'ETF' },
-  { name: 'KODEX 금액티브 (Gold)',       ticker: '411060', sector: 'ETF', country: 'kr', market: 'ETF' },
-  { name: 'KODEX 2차전지산업',           ticker: '305720', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'KODEX 금액티브 (Gold)',           ticker: '411060', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'KODEX 골드선물(H)',               ticker: '132030', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'TIGER 금은선물(H)',               ticker: '284430', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'TIGER 미국나스닥100레버리지(합성)', ticker: '438320', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'KODEX 미국S&P500레버리지(합성H)',  ticker: '245340', sector: 'ETF', country: 'kr', market: 'ETF' },
+  { name: 'KODEX 2차전지산업',               ticker: '305720', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'TIGER 차이나전기차SOLACTIVE', ticker: '371460', sector: 'ETF', country: 'kr', market: 'ETF' },
   { name: 'KODEX 코스닥150',             ticker: '229200', sector: 'ETF', country: 'kr', market: 'ETF' },
 
@@ -134,8 +140,8 @@ export const STOCK_LIST: StockItem[] = [
   { name: 'Microsoft (마이크로소프트)', ticker: 'MSFT', sector: 'IT/플랫폼', country: 'us', market: 'NASDAQ' },
   { name: 'NVIDIA (엔비디아)',   ticker: 'NVDA',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
   { name: 'Amazon (아마존)',     ticker: 'AMZN',  sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
-  { name: 'Alphabet / 알파벳',  ticker: 'GOOGL', sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
-  { name: 'Alphabet (GOOG)',     ticker: 'GOOG',  sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
+  { name: 'Alphabet 클래스A / 알파벳 (GOOGL)', ticker: 'GOOGL', sector: 'IT/플랫폼', country: 'us', market: 'NASDAQ' },
+  { name: 'Alphabet 클래스C (GOOG)',           ticker: 'GOOG',  sector: 'IT/플랫폼', country: 'us', market: 'NASDAQ' },
   { name: 'Meta (메타)',         ticker: 'META',  sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
   { name: 'Tesla (테슬라)',      ticker: 'TSLA',  sector: '소비재',      country: 'us', market: 'NASDAQ' },
   { name: 'AMD',                 ticker: 'AMD',   sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
@@ -186,6 +192,21 @@ export const STOCK_LIST: StockItem[] = [
   { name: 'Realty Income',      ticker: 'O',     sector: '금융',        country: 'us', market: 'NYSE' },
   { name: 'American Tower',     ticker: 'AMT',   sector: '금융',        country: 'us', market: 'NYSE' },
   { name: 'Intuitive Surgical', ticker: 'ISRG',  sector: '바이오',      country: 'us', market: 'NASDAQ' },
+  // 반도체 — NVDA 유사
+  { name: 'Micron (MU/마이크론)',          ticker: 'MU',    sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'Applied Materials (AMAT)',      ticker: 'AMAT',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'Lam Research (LRCX)',           ticker: 'LRCX',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'ASML (반도체 장비)',            ticker: 'ASML',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'Marvell Technology (MRVL)',     ticker: 'MRVL',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'KLA Corporation (KLAC)',        ticker: 'KLAC',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'Super Micro Computer (SMCI)',   ticker: 'SMCI',  sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'Texas Instruments (TXN)',       ticker: 'TXN',   sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  { name: 'Analog Devices (ADI)',          ticker: 'ADI',   sector: 'IT/반도체',   country: 'us', market: 'NASDAQ' },
+  // AI/클라우드 — Google·Meta 유사
+  { name: 'Datadog (DDOG)',                ticker: 'DDOG',  sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
+  { name: 'Cloudflare (NET)',              ticker: 'NET',   sector: 'IT/플랫폼',  country: 'us', market: 'NYSE' },
+  { name: 'MongoDB (MDB)',                 ticker: 'MDB',   sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
+  { name: 'Workday (WDAY)',                ticker: 'WDAY',  sector: 'IT/플랫폼',  country: 'us', market: 'NASDAQ' },
 
   // ── 미국 ETF ────────────────────────────────────────────────────────────
   { name: 'SPY (S&P500 ETF)',       ticker: 'SPY',  sector: 'ETF', country: 'us', market: 'ETF' },
@@ -202,6 +223,27 @@ export const STOCK_LIST: StockItem[] = [
   { name: 'SOXL (반도체 3배 Direxion)',               ticker: 'SOXL', sector: 'ETF', country: 'us', market: 'ETF' },
   { name: 'SOXS (반도체 3배 인버스 Direxion)',        ticker: 'SOXS', sector: 'ETF', country: 'us', market: 'ETF' },
   { name: 'TECL (테크 3배 Direxion)',                 ticker: 'TECL', sector: 'ETF', country: 'us', market: 'ETF' },
+  // 레버리지 S&P500 — SOXL·QLD 유사
+  { name: 'UPRO (S&P500 3배 ProShares)',              ticker: 'UPRO', sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'SPXL (S&P500 3배 Direxion)',               ticker: 'SPXL', sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'SSO (S&P500 2배 ProShares)',               ticker: 'SSO',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'FNGU (FANG+ 3배 MicroSectors)',            ticker: 'FNGU', sector: 'ETF', country: 'us', market: 'ETF' },
+  // 섹터 ETF — QQQ·SOXL 유사
+  { name: 'SMH (VanEck 반도체 ETF)',                  ticker: 'SMH',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'VGT (Vanguard IT ETF)',                    ticker: 'VGT',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'XLK (Technology Sector SPDR)',             ticker: 'XLK',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'XLF (금융 섹터 SPDR)',                     ticker: 'XLF',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'XLE (에너지 섹터 SPDR)',                   ticker: 'XLE',  sector: 'ETF', country: 'us', market: 'ETF' },
+  // 골드 ETF — KODEX 금액티브 유사
+  { name: 'GLD (SPDR Gold Shares)',                   ticker: 'GLD',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'IAU (iShares Gold Trust)',                 ticker: 'IAU',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'GDX (VanEck Gold Miners)',                 ticker: 'GDX',  sector: 'ETF', country: 'us', market: 'ETF' },
+  // 배당·인컴 ETF — SCHD·JEPI 유사
+  { name: 'JEPQ (JPMorgan NASDAQ Income)',            ticker: 'JEPQ', sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'VYM (Vanguard 고배당 ETF)',                ticker: 'VYM',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'DGRO (iShares 배당성장 ETF)',              ticker: 'DGRO', sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'HDV (iShares 고배당 ETF)',                 ticker: 'HDV',  sector: 'ETF', country: 'us', market: 'ETF' },
+  { name: 'NOBL (배당귀족 ProShares)',                ticker: 'NOBL', sector: 'ETF', country: 'us', market: 'ETF' },
 ];
 
 export const CRYPTO_LIST: StockItem[] = [

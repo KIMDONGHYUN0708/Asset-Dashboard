@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0f172a;
+  --border: rgba(255,255,255,0.06);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* Recharts tooltip 전역 스타일 */
+.recharts-tooltip-wrapper { pointer-events: none !important; }
+.recharts-default-tooltip { border-radius: 10px !important; }

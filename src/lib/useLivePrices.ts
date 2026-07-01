@@ -13,6 +13,9 @@ export interface LivePriceResult {
 
 const REFRESH_MS = 30_000;
 
+// 한국 주식 티커는 6자리 숫자
+const isKoreanTicker = (ticker: string) => /^\d{4,6}$/.test(ticker);
+
 export function useLivePrices(): LivePriceResult {
   const setStore = useAssetStore(s => s.setStore);
   const getInvestments = () => useAssetStore.getState().investments;
@@ -22,13 +25,20 @@ export function useLivePrices(): LivePriceResult {
 
   const fetchPrices = useCallback(async () => {
     try {
-      // 주식 종목 티커 수집 (type=stock인 것만)
       const investments = getInvestments();
-      const stockTickers = investments
-        .filter(i => i.type === 'stock' && i.ticker)
+
+      // 한국 주식: country==='kr' 이거나 numeric 티커 (KIS API)
+      const koTickers = investments
+        .filter(i => i.type === 'stock' && i.ticker &&
+          (i.country === 'kr' || (!i.country && isKoreanTicker(i.ticker!))))
         .map(i => i.ticker!);
 
-      // crypto + gold는 필수, 주식은 실패해도 무시 (KIS 토큰 만료 등)
+      // 미국 주식: country==='us' 이거나 alphabetic 티커 (Yahoo Finance)
+      const usTickers = investments
+        .filter(i => i.type === 'stock' && i.ticker &&
+          (i.country === 'us' || (!i.country && !isKoreanTicker(i.ticker!))))
+        .map(i => i.ticker!);
+
       const [cryptoRes, goldRes] = await Promise.all([
         fetch('/api/prices/crypto'),
         fetch('/api/prices/gold'),
@@ -37,13 +47,22 @@ export function useLivePrices(): LivePriceResult {
 
       const [cryptoData, goldData] = await Promise.all([cryptoRes.json(), goldRes.json()]);
 
-      // 주식은 별도 처리 — 실패해도 전체 에러 아님
+      // 한국 주식 (KIS)
       let stockData: { prices?: Record<string, { price: number; changeRate: number }> } = {};
-      if (stockTickers.length > 0) {
+      if (koTickers.length > 0) {
         try {
-          const stockRes = await fetch(`/api/prices/stocks?tickers=${stockTickers.join(',')}`);
-          if (stockRes.ok) stockData = await stockRes.json();
-        } catch { /* 주식 실패는 무시 */ }
+          const res = await fetch(`/api/prices/stocks?tickers=${koTickers.join(',')}`);
+          if (res.ok) stockData = await res.json();
+        } catch { /* KIS 실패는 무시 */ }
+      }
+
+      // 미국 주식 (Yahoo Finance)
+      let usStockData: { prices?: Record<string, { priceKrw: number; changeRate: number }> } = {};
+      if (usTickers.length > 0) {
+        try {
+          const res = await fetch(`/api/prices/us-stocks?tickers=${usTickers.join(',')}`);
+          if (res.ok) usStockData = await res.json();
+        } catch { /* Yahoo Finance 실패는 무시 */ }
       }
 
       // 최신 investments 다시 읽기 (stale closure 방지)
@@ -60,10 +79,15 @@ export function useLivePrices(): LivePriceResult {
         if (inv.ticker === 'GOLD' && goldData?.pricePerDon) {
           return { ...inv, currentPrice: Math.round(goldData.pricePerDon) };
         }
-        // 주식 (KIS)
+        // 한국 주식 (KIS)
         if (inv.type === 'stock' && inv.ticker && stockData?.prices?.[inv.ticker]) {
           const s = stockData.prices[inv.ticker];
           return { ...inv, currentPrice: s.price, dailyChangeRate: +s.changeRate.toFixed(2) };
+        }
+        // 미국 주식 (Yahoo Finance — KRW 변환 포함)
+        if (inv.type === 'stock' && inv.ticker && usStockData?.prices?.[inv.ticker]) {
+          const s = usStockData.prices[inv.ticker];
+          return { ...inv, currentPrice: s.priceKrw, dailyChangeRate: +s.changeRate.toFixed(2) };
         }
         return inv;
       });

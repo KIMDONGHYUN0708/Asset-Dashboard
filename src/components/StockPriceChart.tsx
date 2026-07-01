@@ -1,7 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
 } from 'recharts';
 import { useAssetStore } from '@/lib/store';
@@ -144,17 +144,6 @@ export default function StockPriceChart({ selectedId }: { selectedId: string }) 
           />
         </AreaChart>
       </ResponsiveContainer>
-
-      {/* Volume Chart */}
-      <div className="mt-1">
-        <ResponsiveContainer width="100%" height={50}>
-          <BarChart data={chartData} margin={{ top: 0, right: 4, left: 4, bottom: 0 }}>
-            <YAxis hide domain={['auto', 'auto']} />
-            <Bar dataKey="volume" fill="#334155" opacity={0.7} radius={[1, 1, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-        <p className="text-xs text-slate-600 text-center -mt-1">거래량</p>
-      </div>
 
     </div>
   );

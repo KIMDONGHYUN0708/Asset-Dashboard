@@ -13,7 +13,8 @@ export interface LivePriceResult {
 
 const REFRESH_MS = 30_000;
 
-// 한국 주식 티커는 6자리 숫자
+// 한국 주식 티커는 4~6자리 숫자 (005930, 411060 등)
+// 미국 주식은 알파벳 티커 (TSLA, NFLX, QQQ 등) — country 필드보다 ticker 형식이 신뢰도 높음
 const isKoreanTicker = (ticker: string) => /^\d{4,6}$/.test(ticker);
 
 export function useLivePrices(): LivePriceResult {
@@ -27,16 +28,14 @@ export function useLivePrices(): LivePriceResult {
     try {
       const investments = getInvestments();
 
-      // 한국 주식: country==='kr' 이거나 numeric 티커 (KIS API)
+      // 한국 주식: 티커가 숫자 형식 → KIS 국내 API
       const koTickers = investments
-        .filter(i => i.type === 'stock' && i.ticker &&
-          (i.country === 'kr' || (!i.country && isKoreanTicker(i.ticker!))))
+        .filter(i => i.type === 'stock' && i.ticker && isKoreanTicker(i.ticker!))
         .map(i => i.ticker!);
 
-      // 미국 주식: country==='us' 이거나 alphabetic 티커 (Yahoo Finance)
+      // 미국 주식: 티커가 알파벳 형식 → KIS 해외 API (country 무관)
       const usTickers = investments
-        .filter(i => i.type === 'stock' && i.ticker &&
-          (i.country === 'us' || (!i.country && !isKoreanTicker(i.ticker!))))
+        .filter(i => i.type === 'stock' && i.ticker && !isKoreanTicker(i.ticker!))
         .map(i => i.ticker!);
 
       const [cryptoRes, goldRes] = await Promise.all([

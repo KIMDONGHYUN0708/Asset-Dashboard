@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BASE = process.env.KIWOOM_BASE_URL ?? 'https://openapi.kiwoom.com:9443';
-const APP_KEY = process.env.KIWOOM_APP_KEY!;
-const APP_SECRET = process.env.KIWOOM_APP_SECRET!;
+const BASE = process.env.KIS_BASE_URL ?? 'https://openapi.koreainvestment.com:9443';
+const APP_KEY = process.env.KIS_APP_KEY!;
+const APP_SECRET = process.env.KIS_APP_SECRET!;
 
 // 서버 메모리 토큰 캐시 (만료 10분 전 갱신)
 let tokenCache: { token: string; expiresAt: number } | null = null;
@@ -22,7 +22,7 @@ async function getAccessToken(): Promise<string> {
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Kiwoom token error: ${res.status} ${err}`);
+    throw new Error(`KIS token error: ${res.status} ${err}`);
   }
   const data = await res.json();
   tokenCache = {
@@ -50,12 +50,12 @@ async function fetchStockPrice(ticker: string, token: string) {
 
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Kiwoom price error (${ticker}): ${res.status} ${err}`);
+    throw new Error(`KIS price error (${ticker}): ${res.status} ${err}`);
   }
 
   const data = await res.json();
   if (data.rt_cd !== '0') {
-    throw new Error(`Kiwoom API: ${data.msg1}`);
+    throw new Error(`KIS API: ${data.msg1}`);
   }
 
   const o = data.output;
@@ -77,8 +77,8 @@ export async function GET(req: NextRequest) {
   if (!tickersParam) {
     return NextResponse.json({ error: 'tickers param required' }, { status: 400 });
   }
-  if (!APP_KEY || !APP_SECRET || APP_KEY.includes('입력')) {
-    return NextResponse.json({ error: 'Kiwoom API keys not configured' }, { status: 503 });
+  if (!APP_KEY || !APP_SECRET) {
+    return NextResponse.json({ error: 'KIS API keys not configured' }, { status: 503 });
   }
 
   const tickers = tickersParam.split(',').map(t => t.trim()).filter(Boolean);

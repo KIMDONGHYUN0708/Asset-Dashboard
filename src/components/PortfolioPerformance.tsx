@@ -130,11 +130,11 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                 </div>
 
                 {/* 손익 금액 */}
-                <div className="text-right flex-shrink-0 w-[72px]">
-                  <p className={`text-[12px] font-semibold tabular-nums ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
+                <div className="text-right flex-shrink-0 min-w-[130px] pl-4">
+                  <p className={`text-[12px] font-semibold tabular-nums whitespace-nowrap ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
                     {r.profit >= 0 ? '+' : ''}{formatKRWFull(r.profit)}
                   </p>
-                  <p className="text-[10px] text-slate-600 tabular-nums">
+                  <p className="text-[10px] text-slate-600 tabular-nums whitespace-nowrap">
                     {formatKRW(r.currentValue)}
                   </p>
                 </div>

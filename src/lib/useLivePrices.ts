@@ -76,7 +76,7 @@ export function useLivePrices(): LivePriceResult {
           return { ...inv, currentPrice: Math.round(cryptoData.ETH.price), dailyChangeRate: +cryptoData.ETH.changeRate.toFixed(2) };
         }
         // 금 — currentPrice = 원/돈 (3.75g)
-        if (inv.ticker === 'GOLD' && goldData?.pricePerDon) {
+        if (inv.type === 'gold' && goldData?.pricePerDon) {
           return { ...inv, currentPrice: Math.round(goldData.pricePerDon) };
         }
         // 한국 주식 (KIS)

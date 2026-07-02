@@ -72,7 +72,26 @@ async function fetchKISDomesticPrice(ticker: string, mrkt: string, token: string
   };
 }
 
-// J=KOSPI, Q=KOSDAQ 순 시도 (특수 형식 티커 0064K0 등 대응)
+// Naver Finance fallback — KIS가 처리 못하는 특수 티커(0064K0 등) 대응
+async function fetchNaverStockPrice(ticker: string) {
+  const res = await fetch(
+    `https://m.stock.naver.com/api/stock/${encodeURIComponent(ticker)}/basic`,
+    { headers: { 'User-Agent': 'Mozilla/5.0 (compatible)' }, cache: 'no-store' }
+  );
+  if (!res.ok) throw new Error(`Naver HTTP ${res.status}: ${ticker}`);
+  const d = await res.json();
+  const price = Number(String(d.closePrice ?? '').replace(/,/g, ''));
+  if (!price || price <= 0) throw new Error(`Naver: zero price for ${ticker}`);
+  return {
+    ticker,
+    price,
+    changeRate: Number(d.fluctuationsRatio ?? 0),
+    change: Number(String(d.compareToPreviousClosePrice ?? '').replace(/,/g, '')),
+    volume: 0, high: 0, low: 0, open: 0,
+  };
+}
+
+// J=KOSPI → Q=KOSDAQ → Naver Finance 순 시도
 async function fetchStockPrice(ticker: string, token: string) {
   let lastErr: unknown;
   for (const mrkt of ['J', 'Q'] as const) {
@@ -81,6 +100,12 @@ async function fetchStockPrice(ticker: string, token: string) {
     } catch (e) {
       lastErr = e;
     }
+  }
+  // KIS 실패 시 Naver Finance로 fallback
+  try {
+    return await fetchNaverStockPrice(ticker);
+  } catch (e) {
+    lastErr = e;
   }
   throw lastErr;
 }

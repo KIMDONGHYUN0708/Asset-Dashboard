@@ -32,9 +32,9 @@ async function getAccessToken(): Promise<string> {
   return tokenCache.token;
 }
 
-async function fetchStockPrice(ticker: string, token: string) {
+async function fetchKISDomesticPrice(ticker: string, mrkt: string, token: string) {
   const url = new URL(`${BASE}/uapi/domestic-stock/v1/quotations/inquire-price`);
-  url.searchParams.set('FID_COND_MRKT_DIV_CODE', 'J');
+  url.searchParams.set('FID_COND_MRKT_DIV_CODE', mrkt);
   url.searchParams.set('FID_INPUT_ISCD', ticker);
 
   const res = await fetch(url.toString(), {
@@ -50,25 +50,39 @@ async function fetchStockPrice(ticker: string, token: string) {
 
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`KIS price error (${ticker}): ${res.status} ${err}`);
+    throw new Error(`KIS price error (${ticker}/${mrkt}): ${res.status} ${err}`);
   }
 
   const data = await res.json();
-  if (data.rt_cd !== '0') {
-    throw new Error(`KIS API: ${data.msg1}`);
-  }
+  if (data.rt_cd !== '0') throw new Error(`KIS(${mrkt}): ${data.msg1}`);
 
   const o = data.output;
+  const price = Number(o.stck_prpr);
+  if (!price || price <= 0) throw new Error(`Zero price: ${ticker}(${mrkt})`);
+
   return {
     ticker,
-    price: Number(o.stck_prpr),       // 현재가
-    changeRate: Number(o.prdy_ctrt),   // 전일대비율 (%)
-    change: Number(o.prdy_vrss),       // 전일대비 (원)
-    volume: Number(o.acml_vol),        // 누적거래량
-    high: Number(o.stck_hgpr),         // 고가
-    low: Number(o.stck_lwpr),          // 저가
-    open: Number(o.stck_oprc),         // 시가
+    price,
+    changeRate: Number(o.prdy_ctrt),
+    change: Number(o.prdy_vrss),
+    volume: Number(o.acml_vol),
+    high: Number(o.stck_hgpr),
+    low: Number(o.stck_lwpr),
+    open: Number(o.stck_oprc),
   };
+}
+
+// J=KOSPI, Q=KOSDAQ 순 시도 (특수 형식 티커 0064K0 등 대응)
+async function fetchStockPrice(ticker: string, token: string) {
+  let lastErr: unknown;
+  for (const mrkt of ['J', 'Q'] as const) {
+    try {
+      return await fetchKISDomesticPrice(ticker, mrkt, token);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
 }
 
 // GET /api/prices/stocks?tickers=005930,035720,000660

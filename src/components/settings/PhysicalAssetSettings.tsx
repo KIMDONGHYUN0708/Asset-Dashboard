@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useAssetStore } from '@/lib/store';
 import { PhysicalAsset, PhysicalAssetCategory } from '@/lib/types';
@@ -11,7 +11,7 @@ const CATEGORIES: { key: PhysicalAssetCategory; label: string; icon: React.Eleme
   { key: 'sneakers', label: '운동화·리셀', icon: Package, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
   { key: 'lp',       label: 'LP·레코드',  icon: Disc3,   color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' },
   { key: 'watch',    label: '시계·명품',  icon: Watch,   color: 'text-amber-400',  bg: 'bg-amber-500/10 border-amber-500/20' },
-  { key: 'etc',      label: '기타 실물',  icon: Box,     color: 'text-slate-400',  bg: 'bg-slate-700/50 border-slate-600/30' },
+  { key: 'etc',      label: '기타 실물',  icon: Box,     color: 'text-slate-400',  bg: 'bg-th-input/50 border-th-border/30' },
 ];
 
 const getCategoryConfig = (key: PhysicalAssetCategory) =>
@@ -60,13 +60,13 @@ export default function PhysicalAssetSettings() {
     const diff = Math.abs(current - purchase);
     const diffPct = ((current - purchase) / purchase * 100).toFixed(1);
     return (
-      <div className="mt-3 p-2.5 rounded-lg bg-slate-800/60 flex items-center gap-3">
+      <div className="mt-3 p-2.5 rounded-lg bg-th-muted/60 flex items-center gap-3">
         {isGain
           ? <TrendingUp size={14} className="text-emerald-400 flex-shrink-0" />
           : <TrendingDown size={14} className="text-red-400 flex-shrink-0" />
         }
         <div className="flex-1">
-          <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-th-input overflow-hidden">
             <div
               className={`h-full rounded-full ${isGain ? 'bg-gradient-to-r from-emerald-600 to-emerald-400' : 'bg-gradient-to-r from-slate-500 to-slate-400'}`}
               style={{ width: `${Math.min(pct, 100)}%` }}
@@ -91,7 +91,7 @@ export default function PhysicalAssetSettings() {
       action={
         <button
           onClick={() => setAdding(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-300 border border-slate-700 rounded-lg hover:bg-slate-800"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-th-text-sec border border-th-border rounded-lg hover:bg-th-muted"
         >
           <Plus size={14} /> 자산 등록
         </button>
@@ -111,7 +111,7 @@ export default function PhysicalAssetSettings() {
                   key={cat.key}
                   onClick={() => setNewItem(p => ({ ...p, category: cat.key }))}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                    active ? `${cat.bg} ${cat.color}` : 'border-slate-700 text-slate-500 hover:text-white hover:bg-slate-800'
+                    active ? `${cat.bg} ${cat.color}` : 'border-th-border text-slate-500 hover:text-th-text hover:bg-th-muted'
                   }`}
                 >
                   <Icon size={12} /> {cat.label}
@@ -165,8 +165,8 @@ export default function PhysicalAssetSettings() {
           )}
 
           <div className="flex gap-2 mt-3">
-            <button onClick={addItem} disabled={!newItem.name} className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50">등록 완료</button>
-            <button onClick={() => { setAdding(false); setNewItem(blank()); }} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-800">취소</button>
+            <button onClick={addItem} disabled={!newItem.name} className="px-4 py-1.5 bg-blue-500 text-th-text text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50">등록 완료</button>
+            <button onClick={() => { setAdding(false); setNewItem(blank()); }} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-th-muted">취소</button>
           </div>
         </div>
       )}
@@ -184,7 +184,7 @@ export default function PhysicalAssetSettings() {
           return (
             <div
               key={item.id}
-              className={`rounded-xl ${ed ? 'bg-slate-800 border border-slate-700' : 'bg-slate-800/40 hover:bg-slate-800/60 cursor-pointer'}`}
+              className={`rounded-xl ${ed ? 'bg-th-muted border border-th-border' : 'bg-th-muted/40 hover:bg-th-muted/60 cursor-pointer'}`}
               onClick={() => !ed && startEdit(item)}
             >
               <div className="p-4">
@@ -200,7 +200,7 @@ export default function PhysicalAssetSettings() {
                             key={cat.key}
                             onClick={() => updateEdit(item.id, 'category', cat.key)}
                             className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
-                              active ? `${cat.bg} ${cat.color}` : 'border-slate-700 text-slate-500 hover:text-white hover:bg-slate-800'
+                              active ? `${cat.bg} ${cat.color}` : 'border-th-border text-slate-500 hover:text-th-text hover:bg-th-muted'
                             }`}
                           >
                             <CatIcon size={11} /> {cat.label}
@@ -245,11 +245,11 @@ export default function PhysicalAssetSettings() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => saveItem(item.id)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-th-text text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
                       >
                         <Check size={12} /> 저장
                       </button>
-                      <button onClick={() => cancelEdit(item.id)} className="px-3 py-1.5 text-slate-400 text-xs rounded-lg hover:bg-slate-700 transition-colors">
+                      <button onClick={() => cancelEdit(item.id)} className="px-3 py-1.5 text-slate-400 text-xs rounded-lg hover:bg-th-input transition-colors">
                         취소
                       </button>
                       <div className="flex-1" />
@@ -262,7 +262,7 @@ export default function PhysicalAssetSettings() {
                       <Icon size={15} className={config.color} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-medium text-th-text">
                         {item.name}
                         {item.year && item.category === 'car' && <span className="text-slate-500 font-normal ml-1.5">({item.year}년식)</span>}
                       </p>
@@ -271,7 +271,7 @@ export default function PhysicalAssetSettings() {
                         {item.memo && ` · ${item.memo}`}
                       </p>
                     </div>
-                    <p className="text-sm font-semibold text-white tabular-nums flex-shrink-0">{formatKRWFull(item.currentValue)}</p>
+                    <p className="text-sm font-semibold text-th-text tabular-nums flex-shrink-0">{formatKRWFull(item.currentValue)}</p>
                   </div>
                 )}
               </div>

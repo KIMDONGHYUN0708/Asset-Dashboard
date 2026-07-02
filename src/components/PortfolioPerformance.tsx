@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useMemo } from 'react';
 import { useAssetStore } from '@/lib/store';
 import { calcInvestmentStats, formatKRW, formatKRWFull, formatPercent } from '@/lib/utils';
@@ -18,7 +18,7 @@ interface PerformerData {
 
 const RANK_STYLE = [
   { badge: '🥇', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20', text: 'text-yellow-300' },
-  { badge: '🥈', bg: 'bg-slate-400/10',  border: 'border-slate-400/20',  text: 'text-slate-300' },
+  { badge: '🥈', bg: 'bg-slate-400/10',  border: 'border-slate-400/20',  text: 'text-th-text-sec' },
   { badge: '🥉', bg: 'bg-orange-600/10', border: 'border-orange-500/20', text: 'text-orange-300' },
 ];
 
@@ -52,10 +52,10 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
   const isUp    = totalProfit >= 0;
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
+    <div className="rounded-2xl bg-th-card border border-th-border overflow-hidden">
 
       {/* ── 히어로: 총 평가금액 ── */}
-      <div className="border-b border-slate-800">
+      <div className="border-b border-th-border">
         <div className="px-6 pt-5 pb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 
           {/* 왼쪽: 총 평가금액 */}
@@ -63,12 +63,12 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
             <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
               총 평가금액
             </p>
-            <p className="text-[30px] sm:text-[34px] font-bold text-white tabular-nums tracking-tight leading-none">
+            <p className="text-[30px] sm:text-[34px] font-bold text-th-text tabular-nums tracking-tight leading-none">
               {formatKRWFull(totalCurrent)}
             </p>
             <p className="text-[11px] text-slate-500 mt-2.5 flex items-center gap-2 flex-wrap">
               <span>투자원금</span>
-              <span className="text-slate-300 font-semibold tabular-nums">{formatKRWFull(totalInvested)}</span>
+              <span className="text-th-text-sec font-semibold tabular-nums">{formatKRWFull(totalInvested)}</span>
               <span className="text-slate-700">·</span>
               <span>{rows.length}종목</span>
             </p>
@@ -97,7 +97,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
         </div>
 
         {/* 서브 지표 3열 */}
-        <div className="grid grid-cols-3 divide-x divide-slate-800 border-t border-slate-800">
+        <div className="grid grid-cols-3 divide-x divide-th-border border-t border-th-border">
           <StatCell
             label="오늘 손익"
             value={(dailyProfit >= 0 ? '+' : '') + formatKRWFull(Math.round(dailyProfit))}
@@ -108,7 +108,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
             label="승/패 종목"
             value={`${winners}승 ${losers}패`}
             sub={`승률 ${rows.length > 0 ? Math.round((winners / rows.length) * 100) : 0}%`}
-            valueColor="text-white"
+            valueColor="text-th-text"
           />
           <StatCell
             label="수익 종목"
@@ -137,7 +137,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                   style
                     ? `${style.bg} ${style.border}`
                     : isRUp
-                      ? 'bg-slate-800/30 border-slate-800/60'
+                      ? 'bg-th-muted/30 border-th-border/60'
                       : 'bg-red-500/[0.03] border-red-900/30'
                 }`}
               >
@@ -156,7 +156,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                   {r.inv.country && <CountryFlag country={r.inv.country} size={13} />}
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <p className={`text-[13px] font-semibold truncate ${style ? style.text : isRUp ? 'text-slate-200' : 'text-slate-400'}`}>
+                      <p className={`text-[13px] font-semibold truncate ${style ? style.text : isRUp ? 'text-th-text-sec' : 'text-slate-400'}`}>
                         {r.inv.name}
                       </p>
                       {r.inv.accountType === 'pension' && (
@@ -172,7 +172,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                 {/* 현재 평가금액 — 독립 컬럼 */}
                 <div className="text-right flex-shrink-0 min-w-[150px] hidden sm:block">
                   <p className="text-[10px] text-slate-500 mb-0.5">평가금액</p>
-                  <p className="text-[15px] font-bold text-white tabular-nums whitespace-nowrap">
+                  <p className="text-[15px] font-bold text-th-text tabular-nums whitespace-nowrap">
                     {formatKRWFull(r.currentValue)}
                   </p>
                 </div>
@@ -189,7 +189,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                 </div>
 
                 {/* 손익 금액 */}
-                <div className="text-right flex-shrink-0 min-w-[120px] pl-3 border-l border-slate-800">
+                <div className="text-right flex-shrink-0 min-w-[120px] pl-3 border-l border-th-border">
                   <p className={`text-[13px] font-semibold tabular-nums whitespace-nowrap ${isRUp ? 'text-emerald-400' : 'text-red-400'}`}>
                     {r.profit >= 0 ? '+' : ''}{formatKRWFull(r.profit)}
                   </p>
@@ -206,7 +206,7 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
   );
 }
 
-function StatCell({ label, value, sub, valueColor = 'text-white', subColor = 'text-slate-500' }: {
+function StatCell({ label, value, sub, valueColor = 'text-th-text', subColor = 'text-slate-500' }: {
   label: string; value: string; sub?: string; valueColor?: string; subColor?: string;
 }) {
   return (

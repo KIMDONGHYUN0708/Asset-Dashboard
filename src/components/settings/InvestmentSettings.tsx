@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useAssetStore } from '@/lib/store';
 import { Investment, Transaction } from '@/lib/types';
@@ -77,19 +77,19 @@ function StockSearchInput({
           value={value}
           onChange={e => handleChange(e.target.value)}
           placeholder={placeholder ?? '종목명 또는 코드 검색'}
-          className="w-full bg-slate-700/50 border border-slate-600/50 rounded-lg pl-7 pr-3 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50"
+          className="w-full bg-th-input/50 border border-th-border/50 rounded-lg pl-7 pr-3 py-1.5 text-sm text-th-text placeholder-slate-500 focus:outline-none focus:border-blue-500/50"
         />
       </div>
       {open && results.length > 0 && (
-        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto">
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-th-muted border border-th-border rounded-xl shadow-2xl max-h-52 overflow-y-auto">
           {results.map(s => (
             <button
               key={s.ticker}
               onMouseDown={() => { onSelect(s); setOpen(false); }}
-              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-slate-700 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-th-input transition-colors text-left"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-white font-medium truncate">{s.name}</p>
+                <p className="text-sm text-th-text font-medium truncate">{s.name}</p>
                 <p className="text-xs text-slate-500">{s.ticker} · {s.market}</p>
               </div>
               <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded flex-shrink-0">
@@ -315,7 +315,7 @@ export default function InvestmentSettings() {
       action={
         <button
           onClick={() => { setAdding(true); setNewItem(blank()); setNewSearch(''); }}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-300 border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-th-text-sec border border-th-border rounded-lg hover:bg-th-muted transition-colors"
         >
           <Plus size={14} /> 종목 등록
         </button>
@@ -446,9 +446,9 @@ export default function InvestmentSettings() {
 
           {/* 투자 금액 미리보기 */}
           {newItem.quantity > 0 && newItem.purchasePrice > 0 && (
-            <div className="mt-3 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700/50 text-xs text-slate-400 flex items-center gap-2">
+            <div className="mt-3 px-3 py-2 rounded-lg bg-th-muted/60 border border-th-border/50 text-xs text-slate-400 flex items-center gap-2">
               <span>총 투자금액</span>
-              <span className="text-white font-semibold tabular-nums">
+              <span className="text-th-text font-semibold tabular-nums">
                 {(newItem.quantity * newItem.purchasePrice).toLocaleString()}원
               </span>
               <span className="text-slate-600">
@@ -461,13 +461,13 @@ export default function InvestmentSettings() {
             <button
               onClick={addItem}
               disabled={!newItem.name}
-              className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50"
+              className="px-4 py-1.5 bg-blue-500 text-th-text text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50"
             >
               등록 완료
             </button>
             <button
               onClick={() => { setAdding(false); setNewItem(blank()); setNewSearch(''); }}
-              className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-800"
+              className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-th-muted"
             >
               취소
             </button>
@@ -495,7 +495,7 @@ export default function InvestmentSettings() {
                 const isTxOpen = txOpen[inv.id] ?? false;
 
                 return (
-                  <div key={inv.id} className={`rounded-xl transition-colors ${isEditing ? 'bg-slate-800 border border-slate-700' : 'bg-slate-800/40 hover:bg-slate-800/60'}`}>
+                  <div key={inv.id} className={`rounded-xl transition-colors ${isEditing ? 'bg-th-muted border border-th-border' : 'bg-th-muted/40 hover:bg-th-muted/60'}`}>
                     <div className={`p-3 ${isEditing ? '' : 'cursor-pointer'}`} onClick={() => !isEditing && startEdit(inv)}>
                       {isEditing ? (
                         <div className="space-y-3">
@@ -560,19 +560,19 @@ export default function InvestmentSettings() {
                               )}
                             </div>
                             <div className="col-span-2 flex items-end">
-                              <div className="w-full bg-slate-700/50 rounded-lg p-2 text-xs text-slate-400">
-                                수량 <span className="text-white font-medium">{totalQty.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}</span>
-                                {' · '}평균단가 <span className="text-white font-medium">{formatKRW(Math.round(avgPrice))}</span>
+                              <div className="w-full bg-th-input/50 rounded-lg p-2 text-xs text-slate-400">
+                                수량 <span className="text-th-text font-medium">{totalQty.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}</span>
+                                {' · '}평균단가 <span className="text-th-text font-medium">{formatKRW(Math.round(avgPrice))}</span>
                                 <span className="text-slate-600 ml-1">(매수이력 자동계산)</span>
                               </div>
                             </div>
                           </div>
 
                           {/* 매수이력 아코디언 */}
-                          <div className="border-t border-slate-700 pt-2">
+                          <div className="border-t border-th-border pt-2">
                             <button
                               onClick={() => setTxOpen(p => ({ ...p, [inv.id]: !isTxOpen }))}
-                              className="flex items-center gap-1.5 w-full text-xs text-slate-400 hover:text-white py-1 transition-colors"
+                              className="flex items-center gap-1.5 w-full text-xs text-slate-400 hover:text-th-text py-1 transition-colors"
                             >
                               {isTxOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                               매수 이력 ({txs.length}회)
@@ -583,7 +583,7 @@ export default function InvestmentSettings() {
                                   const txEd = editTx[inv.id]?.[tx.id];
                                   if (txEd) {
                                     return (
-                                      <div key={tx.id} className="p-2 rounded-lg bg-slate-700/60 border border-blue-500/20 space-y-2">
+                                      <div key={tx.id} className="p-2 rounded-lg bg-th-input/60 border border-blue-500/20 space-y-2">
                                         <p className="text-xs text-blue-400 font-medium">{i + 1}회차 수정</p>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                           <div>
@@ -609,11 +609,11 @@ export default function InvestmentSettings() {
                                         </div>
                                         <div className="flex gap-2">
                                           <button onClick={() => saveEditTx(inv.id, tx.id)}
-                                            className="px-3 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600">
+                                            className="px-3 py-1 bg-blue-500 text-th-text text-xs rounded-lg hover:bg-blue-600">
                                             저장
                                           </button>
                                           <button onClick={() => cancelEditTx(inv.id, tx.id)}
-                                            className="px-3 py-1 text-slate-400 text-xs rounded-lg hover:bg-slate-700">
+                                            className="px-3 py-1 text-slate-400 text-xs rounded-lg hover:bg-th-input">
                                             취소
                                           </button>
                                         </div>
@@ -622,13 +622,13 @@ export default function InvestmentSettings() {
                                   }
                                   return (
                                     <div key={tx.id}
-                                      className="flex items-center gap-2 p-2 rounded-lg bg-slate-700/40 hover:bg-slate-700/60 cursor-pointer group"
+                                      className="flex items-center gap-2 p-2 rounded-lg bg-th-input/40 hover:bg-th-input/60 cursor-pointer group"
                                       onClick={() => startEditTx(inv.id, tx)}
                                     >
                                       <span className="w-5 h-5 rounded bg-blue-500/10 text-blue-400 text-xs flex items-center justify-center font-bold flex-shrink-0">{i + 1}</span>
                                       <span className="text-xs text-slate-400 w-20 flex-shrink-0">{tx.date}</span>
-                                      <span className="text-xs text-white">{tx.quantity.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}</span>
-                                      <span className="text-xs text-white">@ {formatKRW(tx.price)}</span>
+                                      <span className="text-xs text-th-text">{tx.quantity.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}</span>
+                                      <span className="text-xs text-th-text">@ {formatKRW(tx.price)}</span>
                                       {tx.note && <span className="text-xs text-slate-500 flex-1 truncate">{tx.note}</span>}
                                       <span className="ml-auto text-xs text-slate-600 group-hover:text-slate-400 flex-shrink-0">수정</span>
                                       <button
@@ -662,23 +662,23 @@ export default function InvestmentSettings() {
                                         onChange={e => setNewTx(p => ({ ...p, [inv.id]: { ...(p[inv.id] ?? blankTx()), note: e.target.value } }))} />
                                     </div>
                                   </div>
-                                  <button onClick={() => addTx(inv.id)} className="px-3 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600">이력 추가</button>
+                                  <button onClick={() => addTx(inv.id)} className="px-3 py-1 bg-blue-500 text-th-text text-xs rounded-lg hover:bg-blue-600">이력 추가</button>
                                 </div>
                               </div>
                             )}
                           </div>
 
                           {/* 행 저장/취소 버튼 */}
-                          <div className="flex items-center gap-2 pt-2 border-t border-slate-700">
+                          <div className="flex items-center gap-2 pt-2 border-t border-th-border">
                             <button
                               onClick={() => saveItem(inv.id)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-th-text text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
                             >
                               <Check size={12} /> 저장
                             </button>
                             <button
                               onClick={() => cancelEdit(inv.id)}
-                              className="px-3 py-1.5 text-slate-400 text-xs rounded-lg hover:bg-slate-700 transition-colors"
+                              className="px-3 py-1.5 text-slate-400 text-xs rounded-lg hover:bg-th-input transition-colors"
                             >
                               취소
                             </button>
@@ -692,14 +692,14 @@ export default function InvestmentSettings() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
                                 {inv.country && <CountryFlag country={inv.country} size={15} />}
-                                <span className="text-sm font-medium text-white">{inv.name}</span>
+                                <span className="text-sm font-medium text-th-text">{inv.name}</span>
                                 {inv.accountType === 'pension' && (
                                   <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded font-medium">연금저축</span>
                                 )}
-                                {inv.ticker && <span className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{inv.ticker}</span>}
+                                {inv.ticker && <span className="text-xs text-slate-500 bg-th-muted px-1.5 py-0.5 rounded">{inv.ticker}</span>}
                                 {inv.sector && <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">{inv.sector}</span>}
                                 {txs.length > 0 && (
-                                  <span className="text-xs text-slate-500 bg-slate-700/60 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                  <span className="text-xs text-slate-500 bg-th-input/60 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                                     <List size={9} />{txs.length}회 매수
                                   </span>
                                 )}
@@ -712,7 +712,7 @@ export default function InvestmentSettings() {
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
                               <div className="text-right">
-                                <p className="text-sm font-semibold text-white">{formatKRW(currentValue)}</p>
+                                <p className="text-sm font-semibold text-th-text">{formatKRW(currentValue)}</p>
                                 <p className={`text-xs font-medium ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                   {profit >= 0 ? <TrendingUp size={11} className="inline mr-0.5" /> : <TrendingDown size={11} className="inline mr-0.5" />}
                                   {profit >= 0 ? '+' : ''}{formatKRW(profit)} ({formatPercent(roi)})
@@ -722,14 +722,14 @@ export default function InvestmentSettings() {
                                 <button
                                   onClick={() => moveInvestment(inv.id, 'up')}
                                   disabled={itemIdx === 0}
-                                  className="p-1 text-slate-600 hover:text-white hover:bg-slate-700 rounded disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                                  className="p-1 text-slate-600 hover:text-th-text hover:bg-th-input rounded disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                                 >
                                   <ArrowUp size={11} />
                                 </button>
                                 <button
                                   onClick={() => moveInvestment(inv.id, 'down')}
                                   disabled={itemIdx === items.length - 1}
-                                  className="p-1 text-slate-600 hover:text-white hover:bg-slate-700 rounded disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                                  className="p-1 text-slate-600 hover:text-th-text hover:bg-th-input rounded disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                                 >
                                   <ArrowDown size={11} />
                                 </button>
@@ -739,16 +739,16 @@ export default function InvestmentSettings() {
 
                           {/* 가상자산·금 전용 — 단위 가격 비교 */}
                           {(inv.type === 'crypto' || inv.type === 'gold') && avgPrice > 0 && inv.currentPrice > 0 && (
-                            <div className="mt-2 flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-700/30 border border-slate-700/40 text-xs">
+                            <div className="mt-2 flex items-center gap-3 px-3 py-2 rounded-lg bg-th-input/30 border border-th-border/40 text-xs">
                               <div className="flex items-center gap-1.5">
                                 <span className="text-slate-500">매수가</span>
-                                <span className="text-slate-300 font-medium tabular-nums">{formatKRW(Math.round(avgPrice))}</span>
+                                <span className="text-th-text-sec font-medium tabular-nums">{formatKRW(Math.round(avgPrice))}</span>
                                 {inv.type === 'gold' && <span className="text-slate-600">/돈</span>}
                               </div>
                               <span className="text-slate-600">→</span>
                               <div className="flex items-center gap-1.5">
                                 <span className="text-slate-500">현재 시세</span>
-                                <span className="text-white font-semibold tabular-nums">{formatKRW(inv.currentPrice)}</span>
+                                <span className="text-th-text font-semibold tabular-nums">{formatKRW(inv.currentPrice)}</span>
                                 {inv.type === 'gold' && <span className="text-slate-500">/돈</span>}
                               </div>
                               <div className={`ml-auto flex items-center gap-1 font-semibold tabular-nums ${roi >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>

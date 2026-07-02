@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useAssetStore } from '@/lib/store';
 import { calcInvestmentStats, formatKRWFull, formatPercent } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
@@ -28,7 +28,7 @@ export default function StockPortfolioHeader({ filteredIds }: Props) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <SummaryCard label="총 평가금액" value={formatKRWFull(totalCurrent)} sub={`투자 ${formatKRWFull(totalInvested)}`} color="text-white" />
+      <SummaryCard label="총 평가금액" value={formatKRWFull(totalCurrent)} sub={`투자 ${formatKRWFull(totalInvested)}`} color="text-th-text" />
       <SummaryCard
         label="총 수익" value={`${totalProfit >= 0 ? '+' : ''}${formatKRWFull(totalProfit)}`}
         sub={formatPercent(totalROI)} color={totalProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}
@@ -52,7 +52,7 @@ function SummaryCard({ label, value, sub, color, up }: {
   label: string; value: string; sub?: string; color: string; up?: boolean;
 }) {
   return (
-    <div className="rounded-xl bg-slate-900 border border-white/[0.06] px-4 py-3.5">
+    <div className="rounded-xl bg-th-card border border-th-border px-4 py-3.5">
       <p className="text-[10px] font-medium text-slate-600 uppercase tracking-widest mb-2">{label}</p>
       <div className="flex items-end gap-1.5">
         {up !== undefined && (

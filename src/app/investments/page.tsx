@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useAssetStore } from '@/lib/store';
 import { calcInvestmentStats, formatKRW, formatKRWFull, formatPercent } from '@/lib/utils';
@@ -83,12 +83,12 @@ export default function InvestmentsPage() {
   return (
     <div className="p-6 space-y-5 max-w-[1400px] mx-auto">
       <div>
-        <h1 className="text-xl font-bold text-white">재테크 분석</h1>
+        <h1 className="text-xl font-bold text-th-text">재테크 분석</h1>
         <p className="text-sm text-slate-500 mt-0.5">주식 · 가상자산 · 금 보유 현황 및 수익률</p>
       </div>
 
       {/* 필터 바 */}
-      <div className="flex flex-wrap gap-3 p-4 rounded-xl bg-slate-900 border border-slate-800">
+      <div className="flex flex-wrap gap-3 p-4 rounded-xl bg-th-card border border-th-border">
         <FilterGroup label="구분" value={typeFilter} options={TYPE_OPTS} onChange={setTypeFilter} />
         <FilterGroup label="증권사" value={institutionFilter} options={institutions} onChange={setInstitutionFilter} />
         <FilterGroup label="섹터" value={sectorFilter} options={sectors} onChange={setSectorFilter} />
@@ -97,7 +97,7 @@ export default function InvestmentsPage() {
           {PERIODS.map((p, i) => (
             <button key={p.label} onClick={() => setPeriodIdx(i)}
               className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
-                periodIdx === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                periodIdx === i ? 'bg-blue-500 text-th-text' : 'text-slate-400 hover:text-th-text hover:bg-th-muted'
               }`}>
               {p.label}
             </button>
@@ -123,15 +123,15 @@ export default function InvestmentsPage() {
       {/* 보유 종목 현황 + 차트 */}
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-5 items-start">
         {/* 종목 테이블 */}
-        <div className="xl:col-span-3 rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-800">
-            <h2 className="text-[13px] font-semibold text-white">보유 종목 현황</h2>
+        <div className="xl:col-span-3 rounded-2xl bg-th-card border border-th-border overflow-hidden">
+          <div className="px-5 py-4 border-b border-th-border">
+            <h2 className="text-[13px] font-semibold text-th-text">보유 종목 현황</h2>
             <p className="text-[11px] text-slate-500 mt-0.5">{filtered.length}종목 · 클릭하면 차트 표시</p>
           </div>
           <div className="overflow-x-auto overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800">
+                <tr className="border-b border-th-border">
                   <th className="text-left text-[10px] text-slate-500 px-5 py-2.5 whitespace-nowrap font-medium uppercase tracking-wider">
                     <SortHeader label="종목" col="name" sortKey={sortKey} sortDir={sortDir} onSort={(k) => handleSort(k)} align="left" />
                   </th>
@@ -166,8 +166,8 @@ export default function InvestmentsPage() {
                   const isUp = profit >= 0;
                   return (
                     <tr key={inv.id} onClick={() => setSelectedId(inv.id)}
-                      className={`border-b border-slate-800/40 cursor-pointer transition-colors ${
-                        isSelected ? 'bg-blue-500/[0.06] border-l-2 border-l-blue-500' : 'hover:bg-slate-800/30'
+                      className={`border-b border-th-border/40 cursor-pointer transition-colors ${
+                        isSelected ? 'bg-blue-500/[0.06] border-l-2 border-l-blue-500' : 'hover:bg-th-muted/30'
                       }`}
                     >
                       <td className="px-5 py-3.5">
@@ -175,7 +175,7 @@ export default function InvestmentsPage() {
                           {inv.country && <CountryFlag country={inv.country} size={14} />}
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className={`text-[13px] font-semibold whitespace-nowrap ${isSelected ? 'text-white' : 'text-slate-200'}`}>
+                              <span className={`text-[13px] font-semibold whitespace-nowrap ${isSelected ? 'text-th-text' : 'text-th-text-sec'}`}>
                                 {inv.name}
                               </span>
                               <TypeBadge type={inv.type} />
@@ -185,14 +185,14 @@ export default function InvestmentsPage() {
                         </div>
                       </td>
                       <td className="px-3 py-3.5 text-right">
-                        <span className="text-[12px] text-slate-300 tabular-nums">{totalQty.toLocaleString()}</span>
+                        <span className="text-[12px] text-th-text-sec tabular-nums">{totalQty.toLocaleString()}</span>
                       </td>
                       <td className="px-3 py-3.5 text-right">
                         <span className="text-[12px] text-slate-400 tabular-nums">{formatKRWFull(Math.round(avgPrice))}</span>
                       </td>
                       <td className="px-3 py-3.5 text-right">
                         <div>
-                          <span className="text-[12px] font-semibold text-white tabular-nums">{formatKRWFull(inv.currentPrice)}</span>
+                          <span className="text-[12px] font-semibold text-th-text tabular-nums">{formatKRWFull(inv.currentPrice)}</span>
                           {inv.dailyChangeRate !== undefined && (
                             <p className={`text-[10px] tabular-nums ${(inv.dailyChangeRate ?? 0) >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                               {formatPercent(inv.dailyChangeRate)}
@@ -201,7 +201,7 @@ export default function InvestmentsPage() {
                         </div>
                       </td>
                       <td className="px-3 py-3.5 text-right">
-                        <span className="text-[13px] font-bold text-white tabular-nums">{formatKRWFull(currentValue)}</span>
+                        <span className="text-[13px] font-bold text-th-text tabular-nums">{formatKRWFull(currentValue)}</span>
                       </td>
                       <td className="px-3 py-3.5 text-right">
                         <div>
@@ -239,7 +239,7 @@ export default function InvestmentsPage() {
             {selectedId
               ? <StockPriceChart selectedId={selectedId} />
               : (
-                <div className="rounded-2xl bg-slate-900 border border-slate-800 p-8 flex items-center justify-center h-64">
+                <div className="rounded-2xl bg-th-card border border-th-border p-8 flex items-center justify-center h-64">
                   <p className="text-sm text-slate-600">종목을 선택하면 차트가 표시됩니다</p>
                 </div>
               )
@@ -262,7 +262,7 @@ function FilterGroup({ label, value, options, onChange }: {
         {options.map(opt => (
           <button key={opt} onClick={() => onChange(opt)}
             className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
-              value === opt ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              value === opt ? 'bg-th-input text-th-text' : 'text-slate-400 hover:text-th-text hover:bg-th-muted'
             }`}>
             {opt}
           </button>
@@ -297,7 +297,7 @@ function SortHeader({ label, col, sortKey, sortDir, onSort, align }: {
       onClick={() => onSort(col)}
       className={`inline-flex items-center gap-1 font-medium uppercase tracking-wider transition-colors ${
         align === 'right' ? 'flex-row-reverse' : ''
-      } ${active ? 'text-slate-300' : 'text-slate-500 hover:text-slate-400'}`}
+      } ${active ? 'text-th-text-sec' : 'text-slate-500 hover:text-slate-400'}`}
     >
       {label}
       {active ? (

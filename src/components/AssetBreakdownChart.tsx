@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useRef, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { useAssetStore } from '@/lib/store';
@@ -47,8 +47,8 @@ export default function AssetBreakdownChart() {
   };
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-white/[0.06] p-6">
-      <h2 className="text-[13px] font-semibold text-white mb-0">자산 구성</h2>
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
+      <h2 className="text-[13px] font-semibold text-th-text mb-0">자산 구성</h2>
 
       <div ref={containerRef} className="relative" onMouseMove={handleMouseMove}>
         <ResponsiveContainer width="100%" height={220}>
@@ -83,7 +83,7 @@ export default function AssetBreakdownChart() {
 
         {tooltip.visible && tooltip.item && (
           <div
-            className="absolute px-3 py-2.5 rounded-xl bg-slate-800 border border-white/[0.08] shadow-xl pointer-events-none z-10 min-w-[120px]"
+            className="absolute px-3 py-2.5 rounded-xl bg-th-muted border border-th-border shadow-xl pointer-events-none z-10 min-w-[120px]"
             style={{
               left: tooltip.x + 14,
               top: tooltip.y,
@@ -91,7 +91,7 @@ export default function AssetBreakdownChart() {
             }}
           >
             <p className="text-[11px] text-slate-400 mb-0.5">{tooltip.item.name}</p>
-            <p className="text-sm font-bold text-white tabular-nums">{formatKRW(tooltip.item.value)}</p>
+            <p className="text-sm font-bold text-th-text tabular-nums">{formatKRW(tooltip.item.value)}</p>
             <p className="text-[10px] text-slate-500 mt-0.5">{tooltip.item.pct}%</p>
           </div>
         )}
@@ -107,7 +107,7 @@ export default function AssetBreakdownChart() {
             />
             <span className="text-[11px] text-slate-500 flex-1 truncate">{item.name}</span>
             <span className="text-[11px] text-slate-400 tabular-nums font-medium">{item.pct}%</span>
-            <span className="text-[11px] text-slate-300 tabular-nums font-semibold w-14 text-right">{formatKRW(item.value)}</span>
+            <span className="text-[11px] text-th-text-sec tabular-nums font-semibold w-14 text-right">{formatKRW(item.value)}</span>
           </div>
         ))}
         {data.length > 6 && (

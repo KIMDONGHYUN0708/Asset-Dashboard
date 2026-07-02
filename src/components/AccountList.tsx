@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import Image from 'next/image';
 import { useAssetStore } from '@/lib/store';
 import { formatKRWFull, CATEGORY_COLOR } from '@/lib/utils';
@@ -16,8 +16,8 @@ export default function AccountList() {
   const { accounts } = useAssetStore();
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-white/[0.06] p-6">
-      <h2 className="text-[13px] font-semibold text-white mb-5">계좌 · 금융 상품</h2>
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
+      <h2 className="text-[13px] font-semibold text-th-text mb-5">계좌 · 금융 상품</h2>
       <div className="space-y-6">
         {CATEGORY_GROUPS.map(({ label, key }) => {
           const items = accounts.filter((a) => a.category === key);
@@ -49,20 +49,20 @@ function AccountCard({ acc }: { acc: Account }) {
   const isInsurance = acc.category === 'insurance';
 
   return (
-    <div className="group flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-800/40 border border-white/[0.04] hover:bg-slate-800/70 hover:border-white/[0.07] transition-all duration-150">
+    <div className="group flex items-center justify-between px-3 py-2.5 rounded-xl bg-th-muted/40 border border-white/[0.04] hover:bg-th-muted/70 hover:border-th-border transition-all duration-150">
       <div className="flex items-center gap-3">
         {acc.logo ? (
           <Image src={acc.logo} alt={acc.institution} width={28} height={28} className="flex-shrink-0 rounded-full" />
         ) : (
           <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold text-th-text flex-shrink-0"
             style={{ backgroundColor: (CATEGORY_COLOR[acc.category] ?? '#475569') + '22' }}
           >
             {acc.institution.slice(0, 2)}
           </div>
         )}
         <div>
-          <p className="text-[12px] font-medium text-slate-200 leading-tight">{acc.name}</p>
+          <p className="text-[12px] font-medium text-th-text-sec leading-tight">{acc.name}</p>
           <p className="text-[10px] text-slate-600 mt-0.5">
             {acc.institution}
             {acc.interestRate && ` · ${acc.interestRate}%`}
@@ -73,7 +73,7 @@ function AccountCard({ acc }: { acc: Account }) {
         </div>
       </div>
       <div className="text-right">
-        <p className={`text-[12px] font-semibold tabular-nums ${isLoan ? 'text-red-400' : 'text-slate-200'}`}>
+        <p className={`text-[12px] font-semibold tabular-nums ${isLoan ? 'text-red-400' : 'text-th-text-sec'}`}>
           {isLoan ? '-' : ''}{formatKRWFull(acc.amount)}
         </p>
         {isInsurance && acc.coverageAmount && (

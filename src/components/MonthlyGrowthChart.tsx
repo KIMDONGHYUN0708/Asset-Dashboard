@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useMemo } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -43,13 +43,13 @@ const CustomTooltip = ({ active, payload, label, unit }: any) => {
   const isAnchor = item?.payload?.isAnchor;
   const isForwardFill = item?.payload?.isForwardFill;
   return (
-    <div className="px-3 py-2.5 rounded-xl bg-slate-800 border border-white/[0.08] shadow-xl min-w-[140px]">
+    <div className="px-3 py-2.5 rounded-xl bg-th-muted border border-th-border shadow-xl min-w-[140px]">
       <p className="text-[10px] text-slate-500 mb-1.5 flex items-center gap-1.5">
         {label}
         {isAnchor && <span className="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded text-[9px]">기준점</span>}
         {isForwardFill && <span className="text-slate-600 text-[9px]">추정</span>}
       </p>
-      <p className="text-sm font-bold text-white tabular-nums">{formatKRW(raw)}</p>
+      <p className="text-sm font-bold text-th-text tabular-nums">{formatKRW(raw)}</p>
       {delta !== 0 && !isForwardFill && (
         <p className={`text-[11px] font-medium mt-0.5 tabular-nums ${delta >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
           {delta >= 0 ? '▲ +' : '▼ '}{formatKRW(delta)}
@@ -223,12 +223,12 @@ export default function MonthlyGrowthChart() {
   };
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-white/[0.06] p-6">
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-[13px] font-semibold text-white">월별 자산 추이</h2>
+            <h2 className="text-[13px] font-semibold text-th-text">월별 자산 추이</h2>
             <span className="text-[10px] text-slate-600">{history.length}개월 기록</span>
             {annualSnapshots.length > 0 && (
               <span className="text-[10px] text-amber-500/80 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full">
@@ -250,21 +250,21 @@ export default function MonthlyGrowthChart() {
 
         <div className="flex items-center gap-2">
           {/* 단위 토글 */}
-          <div className="flex bg-slate-800/80 rounded-lg p-0.5 gap-0.5">
+          <div className="flex bg-th-muted/80 rounded-lg p-0.5 gap-0.5">
             {UNITS.map((u, i) => (
               <button key={u.label} onClick={() => setUnitIdx(i)}
                 className={`px-2 py-1 text-[11px] rounded-md font-medium transition-all ${
-                  unitIdx === i ? 'bg-slate-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                  unitIdx === i ? 'bg-th-input text-th-text shadow-sm' : 'text-slate-500 hover:text-th-text-sec'
                 }`}>
                 {u.label}
               </button>
             ))}
           </div>
           {/* 뷰 모드 토글 */}
-          <div className="flex bg-slate-800/80 rounded-lg p-0.5 gap-0.5">
+          <div className="flex bg-th-muted/80 rounded-lg p-0.5 gap-0.5">
             <button onClick={() => { setViewMode('monthly'); setSelectedSnap(null); setPrevSnap(null); }}
               className={`px-2 py-1 text-[11px] rounded-md font-medium transition-all ${
-                viewMode === 'monthly' ? 'bg-slate-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                viewMode === 'monthly' ? 'bg-th-input text-th-text shadow-sm' : 'text-slate-500 hover:text-th-text-sec'
               }`}>
               월별
             </button>
@@ -276,19 +276,19 @@ export default function MonthlyGrowthChart() {
                 yearlyData.length < 2
                   ? 'text-slate-700 cursor-not-allowed'
                   : viewMode === 'yearly'
-                  ? 'bg-blue-500 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'bg-blue-500 text-th-text shadow-sm'
+                  : 'text-slate-500 hover:text-th-text-sec'
               }`}>
               연도별
             </button>
           </div>
           {/* 기간 필터 (월별 모드에서만) */}
           {viewMode === 'monthly' && (
-            <div className="flex bg-slate-800/80 rounded-lg p-0.5 gap-0.5">
+            <div className="flex bg-th-muted/80 rounded-lg p-0.5 gap-0.5">
               {PERIODS.map((p, i) => (
                 <button key={p.label} onClick={() => setPeriodIdx(i)}
                   className={`px-2 py-1 text-[11px] rounded-md font-medium transition-all ${
-                    periodIdx === i ? 'bg-blue-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                    periodIdx === i ? 'bg-blue-500 text-th-text shadow-sm' : 'text-slate-500 hover:text-th-text-sec'
                   }`}>
                   {p.label}
                 </button>
@@ -299,7 +299,7 @@ export default function MonthlyGrowthChart() {
             className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-all ${
               saved
                 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                : 'bg-slate-800 border-white/[0.06] text-slate-400 hover:text-white hover:border-white/10'
+                : 'bg-th-muted border-th-border text-slate-400 hover:text-th-text hover:border-white/10'
             }`}>
             <Save size={11} />
             {saved ? '저장됨' : '지금 저장'}

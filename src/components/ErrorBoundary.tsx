@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React from 'react';
 
 interface Props {
@@ -19,7 +19,7 @@ export default class ErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="rounded-2xl bg-slate-900 border border-red-500/20 p-6 flex items-center gap-3">
+        <div className="rounded-2xl bg-th-card border border-red-500/20 p-6 flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
             <span className="text-red-400 text-sm font-bold">!</span>
           </div>

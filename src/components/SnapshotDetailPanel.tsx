@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { X, TrendingUp, TrendingDown } from 'lucide-react';
 import { MonthlySnapshot } from '@/lib/types';
 import { formatKRW, formatPercent } from '@/lib/utils';
@@ -53,15 +53,15 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
   const isUp = delta !== null ? delta >= 0 : true;
 
   return (
-    <div className="bg-slate-900 border-t border-slate-800/80 overflow-hidden">
+    <div className="bg-th-card border-t border-th-border/80 overflow-hidden">
 
       {/* ── 히어로: 총 자산 + 전월 대비 ── */}
-      <div className="flex items-end justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-800/70">
+      <div className="flex items-end justify-between gap-4 px-5 pt-5 pb-4 border-b border-th-border/70">
         <div>
           <p className="text-[10px] font-bold tracking-[.12em] uppercase text-blue-500 mb-2.5">
             {y}년 {Number(m)}월 기준
           </p>
-          <p className="text-[30px] font-extrabold text-white tracking-tight tabular-nums leading-none">
+          <p className="text-[30px] font-extrabold text-th-text tracking-tight tabular-nums leading-none">
             {formatHeroKRW(snapshot.total)}
             <span className="text-[14px] font-semibold text-slate-500 ml-1.5">원</span>
           </p>
@@ -91,7 +91,7 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
           )}
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 hover:text-white hover:bg-slate-800 transition-colors self-start mt-0.5"
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 hover:text-th-text hover:bg-th-muted transition-colors self-start mt-0.5"
           >
             <X size={14} />
           </button>
@@ -99,7 +99,7 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
       </div>
 
       {/* ── 자산 구성 카드 그리드 ── */}
-      <div className="px-5 py-4 border-b border-slate-800/70">
+      <div className="px-5 py-4 border-b border-th-border/70">
         <p className="text-[9px] font-bold tracking-[.14em] uppercase text-slate-600 mb-3">자산 구성</p>
         <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-11 gap-2">
           {CATEGORY_KEYS.map((key) => {
@@ -116,7 +116,7 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
                 className={`rounded-xl px-3 py-2.5 border relative overflow-hidden ${
                   isLoan
                     ? 'bg-red-500/5 border-red-900/30'
-                    : 'bg-slate-800/50 border-slate-700/40'
+                    : 'bg-th-muted/50 border-th-border/40'
                 }`}
               >
                 {/* 상단 컬러 accent 라인 */}
@@ -126,7 +126,7 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
                   {CATEGORY_LABELS[key]}
                 </p>
                 <p className={`text-[13px] font-bold tabular-nums leading-tight ${
-                  isLoan ? 'text-red-400' : 'text-white'
+                  isLoan ? 'text-red-400' : 'text-th-text'
                 }`}>
                   {isLoan ? '−' : ''}{formatKRW(Math.abs(val))}
                 </p>
@@ -137,7 +137,7 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
                 </p>
 
                 {!isLoan && (
-                  <div className="mt-2 h-[2px] rounded-full bg-slate-700/50 overflow-hidden">
+                  <div className="mt-2 h-[2px] rounded-full bg-th-input/50 overflow-hidden">
                     <div
                       className="h-full rounded-full opacity-60"
                       style={{ width: `${barWidth}%`, background: accent }}
@@ -159,7 +159,7 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-slate-800">
+                <tr className="border-b border-th-border">
                   {['종목', '구분', '수량', '매입단가', '당시 현재가', '당시 평가금액', '당시 손익', 'ROI', '현재가 대비'].map((h) => (
                     <th key={h} className="text-left text-[10px] text-slate-500 pb-2 pr-3 whitespace-nowrap font-medium">{h}</th>
                   ))}
@@ -175,20 +175,20 @@ export default function SnapshotDetailPanel({ snapshot, prevSnapshot, onClose }:
                   const unit = d.type === 'gold' ? '돈' : d.type === 'stock' ? '주' : '개';
 
                   return (
-                    <tr key={d.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <tr key={d.id} className="border-b border-th-border/50 hover:bg-th-muted/30 transition-colors">
                       <td className="py-2.5 pr-3">
-                        <p className="font-medium text-white">{d.name}</p>
+                        <p className="font-medium text-th-text">{d.name}</p>
                         {d.ticker && <p className="text-[10px] text-slate-500">{d.ticker}</p>}
                       </td>
                       <td className="py-2.5 pr-3 text-slate-400">
                         {d.type === 'stock' ? '주식' : d.type === 'crypto' ? '코인' : '금'}
                       </td>
-                      <td className="py-2.5 pr-3 text-slate-300 whitespace-nowrap">
+                      <td className="py-2.5 pr-3 text-th-text-sec whitespace-nowrap">
                         {d.quantity.toLocaleString()}{unit}
                       </td>
                       <td className="py-2.5 pr-3 text-slate-400 whitespace-nowrap">{formatKRW(d.avgPrice)}</td>
-                      <td className="py-2.5 pr-3 text-white whitespace-nowrap font-medium">{formatKRW(d.priceAtSnapshot)}</td>
-                      <td className="py-2.5 pr-3 text-white whitespace-nowrap">{formatKRW(d.valueAtSnapshot)}</td>
+                      <td className="py-2.5 pr-3 text-th-text whitespace-nowrap font-medium">{formatKRW(d.priceAtSnapshot)}</td>
+                      <td className="py-2.5 pr-3 text-th-text whitespace-nowrap">{formatKRW(d.valueAtSnapshot)}</td>
                       <td className={`py-2.5 pr-3 whitespace-nowrap font-medium ${d.profitAtSnapshot >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                         {d.profitAtSnapshot >= 0 ? '+' : ''}{formatKRW(d.profitAtSnapshot)}
                       </td>

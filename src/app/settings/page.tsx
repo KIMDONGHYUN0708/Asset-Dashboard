@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Wallet, Landmark, TrendingUp, Package, Shield, History, Key, CheckCircle2, ArrowRight, RotateCcw } from 'lucide-react';
@@ -47,23 +47,23 @@ function SettingsContent() {
               <CheckCircle2 size={18} className="text-blue-400" />
             </div>
             <div className="flex-1">
-              <h2 className="text-[14px] font-bold text-white mb-1">처음 오셨군요! 자산 데이터를 입력해주세요</h2>
+              <h2 className="text-[14px] font-bold text-th-text mb-1">처음 오셨군요! 자산 데이터를 입력해주세요</h2>
               <p className="text-[12px] text-slate-400 leading-relaxed">
                 아래 탭에서 현금, 계좌, 투자 자산 등 실제 보유 자산을 입력하면 대시보드가 활성화됩니다.
                 <br />
                 입력한 데이터는 암호화되어 클라우드에 저장되며, 언제든 수정할 수 있습니다.
               </p>
               <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-500">
-                <span className={`px-2 py-1 rounded-lg border ${cash > 0 || depositAmount > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
+                <span className={`px-2 py-1 rounded-lg border ${cash > 0 || depositAmount > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-th-muted border-th-border'}`}>
                   {cash > 0 || depositAmount > 0 ? '✓' : '○'} 현금·보증금
                 </span>
-                <span className={`px-2 py-1 rounded-lg border ${accounts.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
+                <span className={`px-2 py-1 rounded-lg border ${accounts.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-th-muted border-th-border'}`}>
                   {accounts.length > 0 ? '✓' : '○'} 계좌·적금
                 </span>
-                <span className={`px-2 py-1 rounded-lg border ${investments.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
+                <span className={`px-2 py-1 rounded-lg border ${investments.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-th-muted border-th-border'}`}>
                   {investments.length > 0 ? '✓' : '○'} 투자 자산
                 </span>
-                <span className={`px-2 py-1 rounded-lg border ${physicalAssets.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-slate-800 border-slate-700'}`}>
+                <span className={`px-2 py-1 rounded-lg border ${physicalAssets.length > 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-th-muted border-th-border'}`}>
                   {physicalAssets.length > 0 ? '✓' : '○'} 실물 자산 (선택)
                 </span>
               </div>
@@ -71,7 +71,7 @@ function SettingsContent() {
             {hasData && (
               <button
                 onClick={handleComplete}
-                className="flex items-center gap-2 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-[13px] font-semibold rounded-xl transition-colors flex-shrink-0 mt-0.5"
+                className="flex items-center gap-2 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-th-text text-[13px] font-semibold rounded-xl transition-colors flex-shrink-0 mt-0.5"
               >
                 대시보드로 이동 <ArrowRight size={14} />
               </button>
@@ -81,20 +81,20 @@ function SettingsContent() {
       )}
 
       <div>
-        <h1 className="text-xl font-bold text-white">자산 입력 · 수정</h1>
+        <h1 className="text-xl font-bold text-th-text">자산 입력 · 수정</h1>
         <p className="text-sm text-slate-500 mt-0.5">실제 보유 자산을 입력하세요. 저장 즉시 대시보드에 반영됩니다.</p>
       </div>
 
       {/* 탭 */}
-      <div className="flex flex-wrap gap-1 bg-slate-900 border border-slate-800 rounded-xl p-1 w-fit">
+      <div className="flex flex-wrap gap-1 bg-th-card border border-th-border rounded-xl p-1 w-fit">
         {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               tab === key
-                ? 'bg-blue-500 text-white shadow'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-blue-500 text-th-text shadow'
+                : 'text-slate-400 hover:text-th-text hover:bg-th-muted'
             }`}
           >
             <Icon size={15} />
@@ -119,7 +119,7 @@ function SettingsContent() {
         <div className="sticky bottom-4">
           <button
             onClick={handleComplete}
-            className="w-full py-3.5 bg-blue-500 hover:bg-blue-600 text-white text-[14px] font-bold rounded-2xl transition-colors shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-blue-500 hover:bg-blue-600 text-th-text text-[14px] font-bold rounded-2xl transition-colors shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2"
           >
             <CheckCircle2 size={16} />
             설정 완료 — 대시보드로 이동
@@ -128,7 +128,7 @@ function SettingsContent() {
       )}
 
       {/* 데이터 초기화 */}
-      <div className="border-t border-slate-800/60 pt-5 mt-2">
+      <div className="border-t border-th-border/60 pt-5 mt-2">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-slate-500">데이터 초기화</p>

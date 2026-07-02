@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine,
@@ -15,7 +15,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   const v = Number(payload[0]?.value ?? 0);
   return (
-    <div className="px-3 py-2 rounded-xl bg-slate-800 border border-white/[0.08] shadow-xl">
+    <div className="px-3 py-2 rounded-xl bg-th-muted border border-th-border shadow-xl">
       <p className="text-[11px] text-slate-400 mb-1">{label}</p>
       <p className={`text-sm font-bold tabular-nums ${v >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
         {v >= 0 ? '+' : ''}{formatKRW(v)}
@@ -34,10 +34,10 @@ export default function SavingsFlowChart() {
   });
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-white/[0.06] p-6">
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
       <div className="flex items-start justify-between mb-1">
         <div>
-          <h2 className="text-[13px] font-semibold text-white">월 저축·자산 증감</h2>
+          <h2 className="text-[13px] font-semibold text-th-text">월 저축·자산 증감</h2>
           <p className="text-[11px] text-slate-600 mt-0.5">전월 대비 순자산 변화</p>
         </div>
       </div>

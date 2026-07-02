@@ -6,6 +6,7 @@ import LivePricesProvider from '@/components/LivePricesProvider';
 import DataKeySetup from '@/components/DataKeySetup';
 import DataSyncWatcher from '@/components/DataSyncWatcher';
 import OnboardingGuard from '@/components/OnboardingGuard';
+import ThemeProvider from '@/components/ThemeProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,18 +17,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-white min-h-screen`}>
-        <LivePricesProvider />
-        <DataSyncWatcher />
-        <DataKeySetup />
-        <OnboardingGuard />
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-slate-950">
-            {children}
-          </main>
-        </div>
+    <html lang="ko" suppressHydrationWarning>
+      <body className={`${inter.className} bg-th-base text-th-text min-h-screen`}>
+        <ThemeProvider>
+          <LivePricesProvider />
+          <DataSyncWatcher />
+          <DataKeySetup />
+          <OnboardingGuard />
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto bg-th-base">
+              {children}
+            </main>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

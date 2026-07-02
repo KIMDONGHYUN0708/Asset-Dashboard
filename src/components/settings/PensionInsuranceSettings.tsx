@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import Image from 'next/image';
 import { useAssetStore } from '@/lib/store';
@@ -53,11 +53,11 @@ export default function PensionInsuranceSettings() {
       action={
         <div className="flex gap-2">
           <button onClick={() => { setAdding('pension'); setNewItem(blank('pension')); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-300 border border-slate-700 rounded-lg hover:bg-slate-800">
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-th-text-sec border border-th-border rounded-lg hover:bg-th-muted">
             <Plus size={14} /> 연금
           </button>
           <button onClick={() => { setAdding('insurance'); setNewItem(blank('insurance')); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-300 border border-slate-700 rounded-lg hover:bg-slate-800">
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-th-text-sec border border-th-border rounded-lg hover:bg-th-muted">
             <Plus size={14} /> 보험
           </button>
           <SaveButton onClick={saveAll} label={saved ? '✓ 저장됨' : '저장'} />
@@ -93,8 +93,8 @@ export default function PensionInsuranceSettings() {
             )}
           </div>
           <div className="flex gap-2 mt-3">
-            <button onClick={addItem} className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600">추가</button>
-            <button onClick={() => setAdding(null)} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-800">취소</button>
+            <button onClick={addItem} className="px-4 py-1.5 bg-blue-500 text-th-text text-sm rounded-lg hover:bg-blue-600">추가</button>
+            <button onClick={() => setAdding(null)} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-th-muted">취소</button>
           </div>
         </div>
       )}
@@ -111,7 +111,7 @@ export default function PensionInsuranceSettings() {
                 const cur = ed ?? acc;
                 return (
                   <div key={acc.id}
-                    className={`flex items-center gap-3 p-3 rounded-xl ${ed ? 'bg-slate-800 border border-slate-700' : 'bg-slate-800/40 hover:bg-slate-800/60 cursor-pointer'}`}
+                    className={`flex items-center gap-3 p-3 rounded-xl ${ed ? 'bg-th-muted border border-th-border' : 'bg-th-muted/40 hover:bg-th-muted/60 cursor-pointer'}`}
                     onClick={() => !ed && startEdit(acc)}>
                     {cur.logo && (
                       <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0 p-0.5">
@@ -140,13 +140,13 @@ export default function PensionInsuranceSettings() {
                     ) : (
                       <div className="flex-1 flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-white">{acc.name}</p>
+                          <p className="text-sm font-medium text-th-text">{acc.name}</p>
                           <p className="text-xs text-slate-500">{acc.institution}
                             {acc.monthlyPremium && ` · 월 ${(acc.monthlyPremium/10000).toFixed(1)}만원`}
                             {acc.coverageAmount && ` · 보장 ${(acc.coverageAmount/100_000_000).toFixed(0)}억`}
                           </p>
                         </div>
-                        <p className="text-sm font-semibold text-white">{formatKRWFull(acc.amount)}</p>
+                        <p className="text-sm font-semibold text-th-text">{formatKRWFull(acc.amount)}</p>
                       </div>
                     )}
                     <DeleteButton onClick={() => deleteItem(acc.id)} />

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useMemo, useState } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -21,18 +21,18 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   const total = payload.find((p: any) => p.dataKey === 'total')?.value
     ?? payload.reduce((s: number, p: any) => s + (Number(p.value) || 0), 0);
   return (
-    <div className="px-3 py-2.5 rounded-xl bg-slate-800 border border-white/[0.08] shadow-xl min-w-[160px]">
+    <div className="px-3 py-2.5 rounded-xl bg-th-muted border border-th-border shadow-xl min-w-[160px]">
       <p className="text-[10px] text-slate-500 mb-1.5">{label}</p>
-      <p className="text-[13px] font-bold text-white tabular-nums">{formatKRW(total)}</p>
+      <p className="text-[13px] font-bold text-th-text tabular-nums">{formatKRW(total)}</p>
       {payload.length > 1 && (
-        <div className="mt-1.5 space-y-0.5 border-t border-slate-700/50 pt-1.5">
+        <div className="mt-1.5 space-y-0.5 border-t border-th-border/50 pt-1.5">
           {payload.map((p: any) => (
             <div key={p.dataKey} className="flex items-center justify-between gap-4 text-[10px]">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: p.color }} />
                 <span className="text-slate-400">{p.name}</span>
               </span>
-              <span className="tabular-nums text-slate-300">{formatKRW(Number(p.value))}</span>
+              <span className="tabular-nums text-th-text-sec">{formatKRW(Number(p.value))}</span>
             </div>
           ))}
         </div>
@@ -112,11 +112,11 @@ export default function PortfolioTrendChart({ filteredIds }: { filteredIds?: str
   const hasGold = list.some(i => i.type === 'gold');
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6">
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
       {/* 헤더 */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-[13px] font-semibold text-white">재테크 자산 추이</h2>
+          <h2 className="text-[13px] font-semibold text-th-text">재테크 자산 추이</h2>
           <div className="flex items-center gap-2 mt-1">
             <span className={`flex items-center gap-1 text-[13px] font-bold tabular-nums ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
               {isUp ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
@@ -129,11 +129,11 @@ export default function PortfolioTrendChart({ filteredIds }: { filteredIds?: str
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex bg-slate-800/80 rounded-lg p-0.5 gap-0.5">
+          <div className="flex bg-th-muted/80 rounded-lg p-0.5 gap-0.5">
             {PERIODS.map((p, i) => (
               <button key={p.label} onClick={() => setPeriodIdx(i)}
                 className={`px-2 py-1 text-[11px] rounded-md font-medium transition-all ${
-                  periodIdx === i ? 'bg-blue-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                  periodIdx === i ? 'bg-blue-500 text-th-text shadow-sm' : 'text-slate-500 hover:text-th-text-sec'
                 }`}>
                 {p.label}
               </button>
@@ -143,8 +143,8 @@ export default function PortfolioTrendChart({ filteredIds }: { filteredIds?: str
             onClick={() => setShowBreakdown(v => !v)}
             className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-all ${
               showBreakdown
-                ? 'bg-slate-700 border-slate-600 text-white'
-                : 'bg-slate-800 border-white/[0.06] text-slate-400 hover:text-white hover:border-white/10'
+                ? 'bg-th-input border-th-border text-th-text'
+                : 'bg-th-muted border-th-border text-slate-400 hover:text-th-text hover:border-white/10'
             }`}>
             구분별
           </button>

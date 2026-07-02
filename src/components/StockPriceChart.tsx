@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useMemo } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -59,18 +59,18 @@ export default function StockPriceChart({ selectedId }: { selectedId: string }) 
   const priceDiffPct = avgPrice > 0 ? (priceDiff / avgPrice) * 100 : 0;
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6">
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
       {/* 종목명 + 현재가 행 */}
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             {inv.country && <CountryFlag country={inv.country} size={16} />}
-            <h3 className="text-[15px] font-semibold text-white">{inv.name}</h3>
-            {inv.ticker && <span className="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{inv.ticker}</span>}
+            <h3 className="text-[15px] font-semibold text-th-text">{inv.name}</h3>
+            {inv.ticker && <span className="text-[10px] text-slate-500 bg-th-muted px-1.5 py-0.5 rounded">{inv.ticker}</span>}
             {inv.sector && <span className="text-[10px] text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">{inv.sector}</span>}
           </div>
           <div className="flex items-baseline gap-2.5">
-            <span className="text-[26px] font-bold text-white tabular-nums">{formatKRWFull(inv.currentPrice)}</span>
+            <span className="text-[26px] font-bold text-th-text tabular-nums">{formatKRWFull(inv.currentPrice)}</span>
             <span className={`flex items-center gap-0.5 text-[13px] font-semibold ${(inv.dailyChangeRate ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               {(inv.dailyChangeRate ?? 0) >= 0 ? <TrendingUp size={13}/> : <TrendingDown size={13}/>}
               {formatPercent(inv.dailyChangeRate ?? 0)} 오늘
@@ -97,7 +97,7 @@ export default function StockPriceChart({ selectedId }: { selectedId: string }) 
             key={p.label}
             onClick={() => setPeriod(i)}
             className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
-              period === i ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              period === i ? 'bg-blue-500 text-th-text' : 'text-slate-400 hover:text-th-text hover:bg-th-muted'
             }`}
           >
             {p.label}

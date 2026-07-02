@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { ReactNode } from 'react';
 
 interface Props {
@@ -10,10 +10,10 @@ interface Props {
 
 export default function SettingsShell({ title, description, action, children }: Props) {
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+    <div className="rounded-2xl bg-th-card border border-th-border overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-th-border">
         <div>
-          <h2 className="text-base font-semibold text-white">{title}</h2>
+          <h2 className="text-base font-semibold text-th-text">{title}</h2>
           {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
         </div>
         {action}
@@ -39,7 +39,7 @@ export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className={`w-full bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 placeholder:text-slate-600 transition-colors ${props.className ?? ''}`}
+      className={`w-full bg-th-muted border border-th-border text-th-text text-sm rounded-lg px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 placeholder:text-slate-600 transition-colors ${props.className ?? ''}`}
     />
   );
 }
@@ -48,7 +48,7 @@ export function Select({ children, ...props }: React.SelectHTMLAttributes<HTMLSe
   return (
     <select
       {...props}
-      className={`w-full bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-2.5 outline-none focus:border-blue-500 transition-colors ${props.className ?? ''}`}
+      className={`w-full bg-th-muted border border-th-border text-th-text text-sm rounded-lg px-3 py-2.5 outline-none focus:border-blue-500 transition-colors ${props.className ?? ''}`}
     >
       {children}
     </select>
@@ -59,7 +59,7 @@ export function SaveButton({ onClick, label = '저장' }: { onClick: () => void;
   return (
     <button
       onClick={onClick}
-      className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors"
+      className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-th-text text-sm font-medium rounded-lg transition-colors"
     >
       {label}
     </button>

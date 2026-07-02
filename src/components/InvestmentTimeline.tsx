@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useAssetStore } from '@/lib/store';
 import { calcInvestmentStats, formatKRW, formatPercent } from '@/lib/utils';
 import { TrendingUp, TrendingDown, ShoppingCart } from 'lucide-react';
@@ -75,10 +75,10 @@ export default function InvestmentTimeline() {
   rows.sort((a, b) => a.txDate.localeCompare(b.txDate));
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6">
-      <h2 className="text-base font-semibold text-white mb-5">매수 타이밍 타임라인</h2>
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
+      <h2 className="text-base font-semibold text-th-text mb-5">매수 타이밍 타임라인</h2>
       <div className="relative">
-        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-slate-800" />
+        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-th-muted" />
         <div className="space-y-4">
           {rows.map((row) => {
             const txValue = row.invCurrentPrice * row.txQty;
@@ -96,14 +96,14 @@ export default function InvestmentTimeline() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-semibold text-white">{row.invName}</span>
+                        <span className="text-sm font-semibold text-th-text">{row.invName}</span>
                         {!row.isSingle && (
                           <span className="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">
                             {row.txIndex + 1}차/{row.txTotal}차
                           </span>
                         )}
                         {row.txNote && (
-                          <span className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{row.txNote}</span>
+                          <span className="text-xs text-slate-500 bg-th-muted px-1.5 py-0.5 rounded">{row.txNote}</span>
                         )}
                         {!isBetter && (
                           <span className="text-xs text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">▲ 현재가 대비 고가</span>
@@ -126,7 +126,7 @@ export default function InvestmentTimeline() {
                   {/* 해당 회차 투자금 vs 현재 평가 바 */}
                   <div className="mt-1.5 flex items-center gap-2 text-xs text-slate-600">
                     <span className="w-10 text-right">{formatKRW(txInvested)}</span>
-                    <div className="flex-1 h-1 rounded-full bg-slate-800 overflow-hidden">
+                    <div className="flex-1 h-1 rounded-full bg-th-muted overflow-hidden">
                       <div
                         className={`h-full rounded-full ${txProfit >= 0 ? 'bg-emerald-500' : 'bg-red-500'}`}
                         style={{ width: `${Math.min((txValue / Math.max(txValue, txInvested)) * 100, 100)}%` }}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useAssetStore } from '@/lib/store';
 import { calcTotalAssets, buildBreakdown, formatKRW, formatKRWFull, calcInvestmentStats } from '@/lib/utils';
 import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
@@ -45,7 +45,7 @@ export default function NetWorthBanner() {
   const loanTotal = store.accounts.filter(a => a.category === 'loan').reduce((s, a) => s + a.amount, 0);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-slate-900 to-slate-900/50 p-6 md:p-7">
+    <div className="relative overflow-hidden rounded-2xl border border-th-border bg-gradient-to-br from-th-card to-th-card/50 p-6 md:p-7">
       {/* Decorative glows */}
       <div className="pointer-events-none absolute -top-32 -right-32 w-80 h-80 rounded-full bg-blue-600/[0.07] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-violet-600/[0.07] blur-3xl" />
@@ -56,7 +56,7 @@ export default function NetWorthBanner() {
         {/* 총 자산 */}
         <div>
           <p className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-2">총 순자산</p>
-          <p className="text-4xl md:text-5xl font-bold text-white tracking-tight tabular-nums">
+          <p className="text-4xl md:text-5xl font-bold text-th-text tracking-tight tabular-nums">
             {formatKRWFull(total)}
           </p>
           <div className="flex flex-wrap items-center gap-3 mt-3">
@@ -80,9 +80,9 @@ export default function NetWorthBanner() {
         {/* 요약 스탯 */}
         <div className="flex items-stretch gap-3">
           <StatCard label="투자 자산" value={formatKRWFull(investTotal)} accent="blue" />
-          <div className="w-px bg-white/[0.06]" />
+          <div className="w-px bg-th-muted/60" />
           <StatCard label="예·적금" value={formatKRWFull(savingsTotal)} accent="violet" />
-          <div className="w-px bg-white/[0.06]" />
+          <div className="w-px bg-th-muted/60" />
           <StatCard label="대출" value={`-${formatKRWFull(loanTotal)}`} accent="red" />
         </div>
       </div>

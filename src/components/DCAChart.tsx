@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useMemo } from 'react';
 import {
   ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -72,11 +72,11 @@ export default function DCAChart({ investmentId }: Props) {
   const isUp = roi >= 0;
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6 space-y-6">
+    <div className="rounded-2xl bg-th-card border border-th-border p-6 space-y-6">
       {/* 헤더 */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-base font-semibold text-white">
+          <h2 className="text-base font-semibold text-th-text">
             {inv.name} 적립식 매수 분석
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -148,15 +148,15 @@ export default function DCAChart({ investmentId }: Props) {
             const isBetter = row.price < inv.currentPrice;
             return (
               <div key={row.label}
-                className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors">
+                className="flex items-center gap-3 p-3 rounded-xl bg-th-muted/50 hover:bg-th-muted transition-colors">
                 {/* 회차 뱃지 */}
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
                   <span className="text-xs font-bold text-blue-400">{i + 1}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-medium text-white">{row.date}</span>
-                    {row.note && <span className="text-xs text-slate-500 bg-slate-700 px-1.5 py-0.5 rounded">{row.note}</span>}
+                    <span className="text-sm font-medium text-th-text">{row.date}</span>
+                    {row.note && <span className="text-xs text-slate-500 bg-th-input px-1.5 py-0.5 rounded">{row.note}</span>}
                     {isBetter
                       ? <span className="text-xs text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">✓ 현재가 대비 저가매수</span>
                       : <span className="text-xs text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">현재가 대비 고가매수</span>
@@ -180,10 +180,10 @@ export default function DCAChart({ investmentId }: Props) {
         </div>
 
         {/* 최종 요약 */}
-        <div className="mt-3 p-3 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-between">
+        <div className="mt-3 p-3 rounded-xl bg-th-muted border border-th-border flex items-center justify-between">
           <div className="text-xs text-slate-400 space-y-0.5">
-            <p>총 투자금 <span className="text-white font-medium">{formatKRW(totalInvested)}</span></p>
-            <p>현재 평가 <span className="text-white font-medium">{formatKRW(currentValue)}</span></p>
+            <p>총 투자금 <span className="text-th-text font-medium">{formatKRW(totalInvested)}</span></p>
+            <p>현재 평가 <span className="text-th-text font-medium">{formatKRW(currentValue)}</span></p>
           </div>
           <div className="text-right">
             <p className={`text-xl font-bold ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>

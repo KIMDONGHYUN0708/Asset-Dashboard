@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 
 interface Props {
@@ -33,7 +33,7 @@ export default function CountryFlag({ country, size = 16, className = '' }: Prop
         />
       ) : (
         <span
-          className="font-bold uppercase text-white leading-none select-none"
+          className="font-bold uppercase text-th-text leading-none select-none"
           style={{ fontSize: Math.round(size * 0.38) }}
         >
           {code.slice(0, 2)}

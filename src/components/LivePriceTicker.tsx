@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useLivePrices } from '@/lib/useLivePrices';
 import { formatKRW } from '@/lib/utils';
 
@@ -18,7 +18,7 @@ export default function LivePriceTicker() {
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {/* Live indicator */}
-      <div className="flex items-center gap-1.5 pr-3 border-r border-white/[0.06]">
+      <div className="flex items-center gap-1.5 pr-3 border-r border-th-border">
         {error ? (
           <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
         ) : loading ? (
@@ -36,14 +36,14 @@ export default function LivePriceTicker() {
         <div key={t.key} className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: t.dot }} />
           <span className="text-[11px] font-medium text-slate-500">{t.label}</span>
-          <span className="text-[11px] font-semibold text-slate-200 tabular-nums">{formatKRW(t.price)}</span>
+          <span className="text-[11px] font-semibold text-th-text-sec tabular-nums">{formatKRW(t.price)}</span>
           {t.rate !== null && (
             <span className={`text-[11px] font-medium tabular-nums ${t.rate >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               {t.rate >= 0 ? '+' : ''}{t.rate.toFixed(2)}%
             </span>
           )}
           {t.sub && <span className="text-[10px] text-slate-600">{t.sub}</span>}
-          <span className="w-px h-3 bg-white/[0.06] last:hidden" />
+          <span className="w-px h-3 bg-th-muted/60 last:hidden" />
         </div>
       ))}
     </div>

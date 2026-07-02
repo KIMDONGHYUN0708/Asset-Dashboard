@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useAssetStore } from '@/lib/store';
 import { formatKRW } from '@/lib/utils';
@@ -21,7 +21,7 @@ function Input({ ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className="w-full px-3 py-2 text-sm bg-slate-700/60 border border-slate-600/60 rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60"
+      className="w-full px-3 py-2 text-sm bg-th-input/60 border border-th-border/60 rounded-lg text-th-text placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60"
     />
   );
 }
@@ -56,12 +56,12 @@ export default function AnnualSnapshotSettings() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <History size={14} className="text-blue-400" />
-          <h2 className="text-[13px] font-semibold text-white">연도별 과거 자산 기록</h2>
+          <h2 className="text-[13px] font-semibold text-th-text">연도별 과거 자산 기록</h2>
         </div>
         {!adding && (
           <button
             onClick={() => setAdding(true)}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors"
+            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-th-text bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors"
           >
             <Plus size={12} /> 기준점 추가
           </button>
@@ -77,14 +77,14 @@ export default function AnnualSnapshotSettings() {
 
       {/* 입력 폼 */}
       {adding && (
-        <div className="p-4 rounded-xl bg-slate-800 border border-slate-700 space-y-3">
+        <div className="p-4 rounded-xl bg-th-muted border border-th-border space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-slate-500 mb-1 block">연도</label>
               <select
                 value={form.year}
                 onChange={(e) => setForm((f) => ({ ...f, year: Number(e.target.value) }))}
-                className="w-full px-3 py-2 text-sm bg-slate-700/60 border border-slate-600/60 rounded-lg text-white focus:outline-none focus:border-blue-500/60"
+                className="w-full px-3 py-2 text-sm bg-th-input/60 border border-th-border/60 rounded-lg text-th-text focus:outline-none focus:border-blue-500/60"
               >
                 {YEAR_OPTIONS.map((y) => (
                   <option key={y} value={y}>{y}년</option>
@@ -96,7 +96,7 @@ export default function AnnualSnapshotSettings() {
               <select
                 value={form.month}
                 onChange={(e) => setForm((f) => ({ ...f, month: Number(e.target.value) }))}
-                className="w-full px-3 py-2 text-sm bg-slate-700/60 border border-slate-600/60 rounded-lg text-white focus:outline-none focus:border-blue-500/60"
+                className="w-full px-3 py-2 text-sm bg-th-input/60 border border-th-border/60 rounded-lg text-th-text focus:outline-none focus:border-blue-500/60"
               >
                 {MONTH_OPTIONS.map((m) => {
                   const d = toDate(form.year, m);
@@ -129,13 +129,13 @@ export default function AnnualSnapshotSettings() {
           <div className="flex gap-2">
             <button
               onClick={handleAdd}
-              className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600"
+              className="px-4 py-1.5 bg-blue-500 text-th-text text-sm rounded-lg hover:bg-blue-600"
             >
               저장
             </button>
             <button
               onClick={() => setAdding(false)}
-              className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-700"
+              className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-th-input"
             >
               취소
             </button>
@@ -163,7 +163,7 @@ export default function AnnualSnapshotSettings() {
               : '월별 스냅샷 데이터 시작 전까지 유지';
 
             return (
-              <div key={snap.date} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800/80 transition-colors">
+              <div key={snap.date} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-th-muted/50 border border-th-border/50 hover:bg-th-muted/80 transition-colors">
                 {/* 날짜 */}
                 <div className="w-20 flex-shrink-0">
                   <p className="text-[13px] font-bold text-blue-400">{formatDisplayDate(snap.date)}</p>
@@ -178,7 +178,7 @@ export default function AnnualSnapshotSettings() {
 
                 {/* 총자산 */}
                 <div className="flex-1 text-right">
-                  <p className="text-[14px] font-semibold text-white tabular-nums">{formatKRW(snap.total)}</p>
+                  <p className="text-[14px] font-semibold text-th-text tabular-nums">{formatKRW(snap.total)}</p>
                   {snap.note && <p className="text-[11px] text-slate-500 mt-0.5">{snap.note}</p>}
                 </div>
 

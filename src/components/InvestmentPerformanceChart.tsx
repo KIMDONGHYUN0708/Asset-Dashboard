@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine,
@@ -15,8 +15,8 @@ export default function InvestmentPerformanceChart() {
   }).sort((a, b) => b.roi - a.roi);
 
   return (
-    <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6">
-      <h2 className="text-base font-semibold text-white mb-4">종목별 수익률 비교</h2>
+    <div className="rounded-2xl bg-th-card border border-th-border p-6">
+      <h2 className="text-base font-semibold text-th-text mb-4">종목별 수익률 비교</h2>
       <ResponsiveContainer width="100%" height={240}>
         <BarChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }} barSize={36}>
           <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />

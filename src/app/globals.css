@@ -1,6 +1,39 @@
 @import "tailwindcss";
 
+/* ── 클래스 기반 다크모드 (html.dark) ── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── 시맨틱 컬러 토큰 — .dark 클래스에서 오버라이드됨 ── */
+@theme {
+  --color-th-base:     #f8fafc;   /* 페이지/사이드바 배경 */
+  --color-th-card:     #ffffff;   /* 카드/패널 배경 */
+  --color-th-muted:    #f1f5f9;   /* 약간 높은 표면 (호버, subtle 영역) */
+  --color-th-input:    #e8ecf0;   /* 폼 인풋 배경 */
+  --color-th-border:   #e2e8f0;   /* 모든 경계선 */
+  --color-th-text:     #0f172a;   /* 주요 텍스트 */
+  --color-th-text-sec: #475569;   /* 보조 텍스트 */
+}
+
+/* ── 다크모드 토큰 오버라이드 ── */
+html.dark {
+  --color-th-base:     #020617;
+  --color-th-card:     #0f172a;
+  --color-th-muted:    #1e293b;
+  --color-th-input:    #334155;
+  --color-th-border:   #1e293b;
+  --color-th-text:     #f8fafc;
+  --color-th-text-sec: #cbd5e1;
+}
+
+/* ── CSS 변수 (기존 호환) ── */
 :root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --border: #e2e8f0;
+}
+
+html.dark {
   --background: #020617;
   --foreground: #f8fafc;
   --card: #0f172a;
@@ -12,6 +45,7 @@ body {
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 * { box-sizing: border-box; }
@@ -23,8 +57,8 @@ body {
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #334155; }
+::-webkit-scrollbar-thumb { background: var(--color-th-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-th-input); }
 
 /* Recharts tooltip 전역 스타일 */
 .recharts-tooltip-wrapper { pointer-events: none !important; }

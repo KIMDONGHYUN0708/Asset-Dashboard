@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useAssetStore } from '@/lib/store';
 import { Account, AssetCategory } from '@/lib/types';
@@ -131,7 +131,7 @@ export default function AccountSettings() {
       action={
         <button
           onClick={() => { setAdding(true); setNoMaturity(false); }}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-300 border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-th-text-sec border border-th-border rounded-lg hover:bg-th-muted transition-colors"
         >
           <Plus size={14} /> 계좌 등록
         </button>
@@ -179,7 +179,7 @@ export default function AccountSettings() {
                         <Input type="date" value={newItem.maturityDate ?? ''} onChange={e => setNewItem(p => ({ ...p, maturityDate: e.target.value || undefined }))} />
                         <button
                           onClick={() => { setNoMaturity(true); setNewItem(p => ({ ...p, maturityDate: undefined })); }}
-                          className="px-2 py-1.5 text-xs text-slate-500 border border-slate-700 rounded-lg hover:bg-slate-800 whitespace-nowrap"
+                          className="px-2 py-1.5 text-xs text-slate-500 border border-th-border rounded-lg hover:bg-th-muted whitespace-nowrap"
                         >없음</button>
                       </div>
                     )}
@@ -198,8 +198,8 @@ export default function AccountSettings() {
               <span className="text-xs text-slate-500">{newItem.institution} 로고 미리보기</span>
             </div>
             <div className="flex gap-2">
-              <button onClick={addItem} disabled={!newItem.name} className="px-4 py-1.5 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50">등록 완료</button>
-              <button onClick={() => { setAdding(false); setNoMaturity(false); setNewItem(blankAccount()); }} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-slate-800">취소</button>
+              <button onClick={addItem} disabled={!newItem.name} className="px-4 py-1.5 bg-blue-500 text-th-text text-sm rounded-lg hover:bg-blue-600 disabled:opacity-50">등록 완료</button>
+              <button onClick={() => { setAdding(false); setNoMaturity(false); setNewItem(blankAccount()); }} className="px-4 py-1.5 text-slate-400 text-sm rounded-lg hover:bg-th-muted">취소</button>
             </div>
           </div>
         )}
@@ -218,7 +218,7 @@ export default function AccountSettings() {
                   return (
                     <div
                       key={acc.id}
-                      className={`rounded-xl transition-colors ${ed ? 'bg-slate-800 border border-slate-700' : 'bg-slate-800/40 hover:bg-slate-800/70 cursor-pointer'}`}
+                      className={`rounded-xl transition-colors ${ed ? 'bg-th-muted border border-th-border' : 'bg-th-muted/40 hover:bg-th-muted/70 cursor-pointer'}`}
                       onClick={() => !ed && startEdit(acc)}
                     >
                       <div className="flex items-start gap-3 p-3">
@@ -262,13 +262,13 @@ export default function AccountSettings() {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => saveItem(acc.id)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-th-text text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
                               >
                                 <Check size={12} /> 저장
                               </button>
                               <button
                                 onClick={() => cancelEdit(acc.id)}
-                                className="px-3 py-1.5 text-slate-400 text-xs rounded-lg hover:bg-slate-700 transition-colors"
+                                className="px-3 py-1.5 text-slate-400 text-xs rounded-lg hover:bg-th-input transition-colors"
                               >
                                 취소
                               </button>
@@ -279,7 +279,7 @@ export default function AccountSettings() {
                         ) : (
                           <div className="flex-1 flex items-center justify-between min-w-0">
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-white">{acc.name}</p>
+                              <p className="text-sm font-medium text-th-text">{acc.name}</p>
                               <p className="text-xs text-slate-500">
                                 {acc.institution}
                                 {acc.interestRate != null && ` · ${acc.interestRate}%`}
@@ -288,7 +288,7 @@ export default function AccountSettings() {
                                 {cat === 'savings' && !acc.maturityDate && ' · 자유/청약'}
                               </p>
                             </div>
-                            <p className={`text-sm font-semibold flex-shrink-0 ml-3 ${cat === 'loan' ? 'text-red-400' : 'text-white'}`}>
+                            <p className={`text-sm font-semibold flex-shrink-0 ml-3 ${cat === 'loan' ? 'text-red-400' : 'text-th-text'}`}>
                               {cat === 'loan' ? '-' : ''}{formatKRWFull(acc.amount)}
                             </p>
                           </div>

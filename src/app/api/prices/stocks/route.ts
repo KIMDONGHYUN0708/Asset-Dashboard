@@ -4,13 +4,58 @@ const BASE = process.env.KIS_BASE_URL ?? 'https://openapi.koreainvestment.com:94
 const APP_KEY = process.env.KIS_APP_KEY!;
 const APP_SECRET = process.env.KIS_APP_SECRET!;
 
-// 서버 메모리 토큰 캐시 (만료 10분 전 갱신)
+const KV_URL = process.env.KV_REST_API_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+const KV_KIS_KEY = 'kis:access_token';
+const TOKEN_TTL_SEC = 82_800; // 23h (KIS 토큰 유효기간 24h보다 1h 짧게)
+
+function kvHeaders() {
+  return { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' };
+}
+
+// 인스턴스 메모리 캐시 — warm 인스턴스에서 KV 왕복 생략
 let tokenCache: { token: string; expiresAt: number } | null = null;
 
+async function getTokenFromKV(): Promise<string | null> {
+  if (!KV_URL || !KV_TOKEN) return null;
+  try {
+    const res = await fetch(KV_URL, {
+      method: 'POST',
+      headers: kvHeaders(),
+      body: JSON.stringify(['GET', KV_KIS_KEY]),
+    });
+    const { result } = await res.json();
+    return result ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveTokenToKV(token: string): Promise<void> {
+  if (!KV_URL || !KV_TOKEN) return;
+  try {
+    await fetch(KV_URL, {
+      method: 'POST',
+      headers: kvHeaders(),
+      body: JSON.stringify(['SET', KV_KIS_KEY, token, 'EX', TOKEN_TTL_SEC]),
+    });
+  } catch {
+    // best-effort
+  }
+}
+
 async function getAccessToken(): Promise<string> {
+  // 1단계: 인스턴스 메모리 (warm 재사용)
   if (tokenCache && Date.now() < tokenCache.expiresAt - 600_000) {
     return tokenCache.token;
   }
+  // 2단계: KV 캐시 — cold start 이후에도 재발급 방지
+  const kvToken = await getTokenFromKV();
+  if (kvToken) {
+    tokenCache = { token: kvToken, expiresAt: Date.now() + TOKEN_TTL_SEC * 1000 };
+    return kvToken;
+  }
+  // 3단계: 신규 발급 후 KV에 저장
   const res = await fetch(`${BASE}/oauth2/tokenP`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -25,11 +70,10 @@ async function getAccessToken(): Promise<string> {
     throw new Error(`KIS token error: ${res.status} ${err}`);
   }
   const data = await res.json();
-  tokenCache = {
-    token: data.access_token,
-    expiresAt: Date.now() + 86_400_000, // 24h
-  };
-  return tokenCache.token;
+  const newToken: string = data.access_token;
+  tokenCache = { token: newToken, expiresAt: Date.now() + 86_400_000 };
+  await saveTokenToKV(newToken);
+  return newToken;
 }
 
 async function fetchKISDomesticPrice(ticker: string, mrkt: string, token: string) {

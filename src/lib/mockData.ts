@@ -113,5 +113,6 @@ export const mockStore: AssetStore = {
   ],
 
   annualSnapshots: [],
+  dailyHistory: [],
   isOnboarded: true,
 };

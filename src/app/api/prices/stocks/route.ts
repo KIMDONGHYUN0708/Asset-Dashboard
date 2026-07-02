@@ -123,22 +123,73 @@ async function fetchNaverStockPrice(ticker: string) {
   throw lastErr;
 }
 
-// J=KOSPI → Q=KOSDAQ → Naver Finance 순 시도
+// KIS ETF/ETN 현재가 전용 API (FHPST02400000) — 0064K0 같은 특수 티커 대응
+async function fetchKISETFPrice(ticker: string, token: string) {
+  const url = new URL(`${BASE}/uapi/etfetn/v1/quotations/inquire-price`);
+  url.searchParams.set('FID_COND_MRKT_DIV_CODE', 'J');
+  url.searchParams.set('FID_INPUT_ISCD', ticker);
+
+  const res = await fetch(url.toString(), {
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      authorization: `Bearer ${token}`,
+      appkey: APP_KEY,
+      appsecret: APP_SECRET,
+      tr_id: 'FHPST02400000',
+      custtype: 'P',
+    },
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`KIS ETF price error (${ticker}): ${res.status} ${err}`);
+  }
+
+  const data = await res.json();
+  if (data.rt_cd !== '0') throw new Error(`KIS ETF: ${data.msg1}`);
+
+  const o = data.output;
+  const price = Number(o.stck_prpr);
+  if (!price || price <= 0) throw new Error(`Zero ETF price: ${ticker}`);
+
+  return {
+    ticker,
+    price,
+    changeRate: Number(o.prdy_ctrt),
+    change: Number(o.prdy_vrss),
+    volume: Number(o.acml_vol),
+    high: Number(o.stck_hgpr),
+    low: Number(o.stck_lwpr),
+    open: Number(o.stck_oprc),
+  };
+}
+
+// 특수 ETF 티커 판별 (0064K0 패턴: 4자리숫자 + 알파벳 + 숫자)
+function isSpecialETFTicker(ticker: string) {
+  return /^\d{4}[A-Z]\d$/.test(ticker);
+}
+
+// ETF 티커: ETF API 먼저 → J/Q 주식 API → Naver
+// 일반 티커: J → Q → ETF API → Naver
 async function fetchStockPrice(ticker: string, token: string) {
   let lastErr: unknown;
+
+  if (isSpecialETFTicker(ticker)) {
+    // ETF 전용 API 우선 시도
+    try { return await fetchKISETFPrice(ticker, token); } catch (e) { lastErr = e; }
+  }
+
   for (const mrkt of ['J', 'Q'] as const) {
-    try {
-      return await fetchKISDomesticPrice(ticker, mrkt, token);
-    } catch (e) {
-      lastErr = e;
-    }
+    try { return await fetchKISDomesticPrice(ticker, mrkt, token); } catch (e) { lastErr = e; }
   }
-  // KIS 실패 시 Naver Finance로 fallback
-  try {
-    return await fetchNaverStockPrice(ticker);
-  } catch (e) {
-    lastErr = e;
+
+  if (!isSpecialETFTicker(ticker)) {
+    // 일반 티커는 ETF API도 fallback으로 시도
+    try { return await fetchKISETFPrice(ticker, token); } catch (e) { lastErr = e; }
   }
+
+  // 최후 fallback: Naver Finance
+  try { return await fetchNaverStockPrice(ticker); } catch (e) { lastErr = e; }
   throw lastErr;
 }
 

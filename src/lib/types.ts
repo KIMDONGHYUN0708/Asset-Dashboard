@@ -110,6 +110,12 @@ export interface AnnualSnapshot {
   note?: string;
 }
 
+/** 일별 자산 스냅샷 — 앱 열 때 오늘 날짜로 자동 저장 */
+export interface DailySnapshot {
+  date: string;  // YYYY-MM-DD
+  total: number;
+}
+
 export interface AssetStore {
   cash: number;
   accounts: Account[];
@@ -118,5 +124,6 @@ export interface AssetStore {
   depositAmount: number;
   history: MonthlySnapshot[];
   annualSnapshots: AnnualSnapshot[];
-  isOnboarded: boolean; // 초기 설정 완료 여부
+  dailyHistory: DailySnapshot[];
+  isOnboarded: boolean;
 }

@@ -1,10 +1,15 @@
 'use client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { AssetStore, MonthlySnapshot, SnapshotInvestment, PhysicalAsset } from './types';
+import { AssetStore, MonthlySnapshot, DailySnapshot, SnapshotInvestment, PhysicalAsset } from './types';
 import { buildBreakdown, calcTotalAssets, calcInvestmentStats } from './utils';
 
 /** 신규 사용자 기본 상태 — 더미 데이터 없음 */
+function getTodayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 const emptyStore: AssetStore = {
   cash: 0,
   accounts: [],
@@ -13,6 +18,7 @@ const emptyStore: AssetStore = {
   depositAmount: 0,
   history: [],
   annualSnapshots: [],
+  dailyHistory: [],
   isOnboarded: false,
 };
 
@@ -22,6 +28,7 @@ interface AppState extends AssetStore {
   setDeposit: (amount: number) => void;
   setOnboarded: (v: boolean) => void;
   saveSnapshot: (yyyyMm?: string) => void;
+  saveDailySnapshot: () => void;
   setAnnualSnapshot: (snap: import('./types').AnnualSnapshot) => void;
   removeAnnualSnapshot: (date: string) => void;
 }
@@ -76,6 +83,18 @@ export const useAssetStore = create<AppState>()(
         }));
       },
 
+      saveDailySnapshot: () => {
+        const state = get();
+        const today = getTodayStr();
+        const snap: DailySnapshot = { date: today, total: calcTotalAssets(state) };
+        set((s) => ({
+          dailyHistory: [
+            ...(s.dailyHistory ?? []).filter((h) => h.date !== today),
+            snap,
+          ].sort((a, b) => a.date.localeCompare(b.date)),
+        }));
+      },
+
       setAnnualSnapshot: (snap) =>
         set((s) => ({
           annualSnapshots: [
@@ -91,7 +110,7 @@ export const useAssetStore = create<AppState>()(
     }),
     {
       name: 'asset-dashboard-store',
-      version: 5,
+      version: 6,
       migrate: (persisted: any, version: number) => {
         const carsToPhysical = (cars: any[]): PhysicalAsset[] =>
           (cars ?? []).map((c: any) => ({
@@ -111,6 +130,7 @@ export const useAssetStore = create<AppState>()(
             isOnboarded: true,
             annualSnapshots: persisted.annualSnapshots ?? [],
             physicalAssets: carsToPhysical(persisted.cars),
+            dailyHistory: [],
           };
         }
         if (version === 4) {
@@ -118,7 +138,11 @@ export const useAssetStore = create<AppState>()(
             ...emptyStore,
             ...persisted,
             physicalAssets: persisted.physicalAssets ?? carsToPhysical(persisted.cars),
+            dailyHistory: [],
           };
+        }
+        if (version === 5) {
+          return { ...emptyStore, ...persisted, dailyHistory: persisted.dailyHistory ?? [] };
         }
         return { ...emptyStore, ...persisted };
       },

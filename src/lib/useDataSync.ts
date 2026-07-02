@@ -48,6 +48,7 @@ export async function saveToCloud(uuid: string): Promise<boolean> {
       depositAmount: state.depositAmount,
       history: state.history,
       annualSnapshots: state.annualSnapshots ?? [],
+      dailyHistory: state.dailyHistory ?? [],
     };
     const payload = await encryptData(uuid, JSON.stringify(data));
     const res = await fetch('/api/sync', {

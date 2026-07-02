@@ -235,36 +235,57 @@ export default function MonthlyGrowthChart() {
 
   /* ── 연도별 차트 데이터 ── */
   const yearlyData = useMemo(() => {
-    const years = [...new Set(history.map((h) => h.date.slice(0, 4)))];
-    const byYear: Record<string, MonthlySnapshot> = {};
-    years.forEach((year) => {
+    // history와 annualSnapshots 양쪽에서 연도 수집
+    const allYears = [
+      ...new Set([
+        ...history.map((h) => h.date.slice(0, 4)),
+        ...annualSnapshots.map((a) => a.date.slice(0, 4)),
+      ]),
+    ].sort();
+
+    type YearEntry = { date: string; total: number; note?: string; fromAnnual: boolean };
+    const byYear: Record<string, YearEntry> = {};
+
+    allYears.forEach((year) => {
       const yearSnaps = history.filter((h) => h.date.startsWith(year));
-      const july = yearSnaps.find((h) => h.date === `${year}-07`);
-      if (july) { byYear[year] = july; return; }
-      byYear[year] = yearSnaps.reduce((best, h) => {
-        const bestDiff = Math.abs(parseInt(best.date.slice(5, 7)) - 7);
-        const curDiff = Math.abs(parseInt(h.date.slice(5, 7)) - 7);
-        return curDiff < bestDiff ? h : best;
-      });
+      if (yearSnaps.length > 0) {
+        // 월별 기록 우선: 7월 선호, 없으면 7월과 가장 가까운 달
+        const july = yearSnaps.find((h) => h.date === `${year}-07`);
+        const best = july ?? yearSnaps.reduce((bestH, h) => {
+          const bestDiff = Math.abs(parseInt(bestH.date.slice(5, 7)) - 7);
+          const curDiff = Math.abs(parseInt(h.date.slice(5, 7)) - 7);
+          return curDiff < bestDiff ? h : bestH;
+        });
+        byYear[year] = { date: best.date, total: best.total, fromAnnual: false };
+      } else {
+        // 월별 기록 없으면 연도별 기준점 사용 (해당 연도의 마지막 항목)
+        const annualForYear = annualSnapshots.filter((a) => a.date.startsWith(year));
+        if (annualForYear.length > 0) {
+          const snap = annualForYear[annualForYear.length - 1];
+          byYear[year] = { date: snap.date, total: snap.total, note: snap.note, fromAnnual: true };
+        }
+      }
     });
+
     const sorted = Object.entries(byYear).sort(([a], [b]) => a.localeCompare(b));
-    return sorted.map(([year, snap], i) => {
-      const prevSnap = sorted[i - 1]?.[1];
-      const delta = prevSnap ? snap.total - prevSnap.total : 0;
-      const deltaPct = prevSnap && prevSnap.total > 0
-        ? ((snap.total - prevSnap.total) / prevSnap.total) * 100 : 0;
+    return sorted.map(([year, entry], i) => {
+      const prevEntry = sorted[i - 1]?.[1];
+      const delta = prevEntry ? entry.total - prevEntry.total : 0;
+      const deltaPct = prevEntry && prevEntry.total > 0
+        ? ((entry.total - prevEntry.total) / prevEntry.total) * 100 : 0;
       return {
-        ...snap,
+        ...entry,
         year,
         dateLabel: `${year}년`,
-        rawTotal: snap.total,
-        total: +(snap.total / unit.divisor).toFixed(2),
+        rawTotal: entry.total,
+        total: +(entry.total / unit.divisor).toFixed(2),
         delta,
         deltaPct,
         isUp: delta >= 0,
+        isAnchor: entry.fromAnnual,
       };
     });
-  }, [history, unitIdx]);
+  }, [history, annualSnapshots, unitIdx]);
 
   /* ── 일별 차트 데이터 ── */
   const dailyData = useMemo((): DailyPoint[] => {
@@ -466,7 +487,7 @@ export default function MonthlyGrowthChart() {
             <Bar dataKey="total" radius={[4, 4, 0, 0]} maxBarSize={64}>
               {yearlyData.map((entry, index) => (
                 <Cell key={`cell-${index}`}
-                  fill={selectedSnap?.date === entry.date ? '#3b82f6' : entry.isUp ? '#22c55e' : '#ef4444'}
+                  fill={selectedSnap?.date === entry.date ? '#3b82f6' : entry.fromAnnual ? '#f59e0b' : entry.isUp ? '#22c55e' : '#ef4444'}
                   fillOpacity={selectedSnap?.date === entry.date ? 1 : 0.65}
                 />
               ))}

@@ -169,8 +169,16 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                   </div>
                 </div>
 
+                {/* 현재 평가금액 — 독립 컬럼 */}
+                <div className="text-right flex-shrink-0 min-w-[150px] hidden sm:block">
+                  <p className="text-[10px] text-slate-500 mb-0.5">평가금액</p>
+                  <p className="text-[15px] font-bold text-white tabular-nums whitespace-nowrap">
+                    {formatKRWFull(r.currentValue)}
+                  </p>
+                </div>
+
                 {/* 수익률 */}
-                <div className="flex items-center gap-1 flex-shrink-0">
+                <div className="flex items-center gap-1 flex-shrink-0 min-w-[90px] justify-end">
                   {isRUp
                     ? <TrendingUp  size={12} className="text-emerald-400" />
                     : <TrendingDown size={12} className="text-red-400" />
@@ -181,12 +189,12 @@ export default function PortfolioPerformance({ filteredIds }: { filteredIds?: st
                 </div>
 
                 {/* 손익 금액 */}
-                <div className="text-right flex-shrink-0 min-w-[140px] pl-4">
-                  <p className={`text-[12px] font-semibold tabular-nums whitespace-nowrap ${isRUp ? 'text-emerald-400' : 'text-red-400'}`}>
+                <div className="text-right flex-shrink-0 min-w-[120px] pl-3 border-l border-slate-800">
+                  <p className={`text-[13px] font-semibold tabular-nums whitespace-nowrap ${isRUp ? 'text-emerald-400' : 'text-red-400'}`}>
                     {r.profit >= 0 ? '+' : ''}{formatKRWFull(r.profit)}
                   </p>
-                  <p className="text-[10px] text-slate-500 tabular-nums whitespace-nowrap mt-0.5">
-                    현재 <span className="text-slate-400 font-medium">{formatKRWFull(r.currentValue)}</span>
+                  <p className="text-[10px] text-slate-600 tabular-nums whitespace-nowrap mt-0.5 sm:hidden">
+                    현재 {formatKRWFull(r.currentValue)}
                   </p>
                 </div>
               </div>

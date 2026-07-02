@@ -72,23 +72,55 @@ async function fetchKISDomesticPrice(ticker: string, mrkt: string, token: string
   };
 }
 
+const NAVER_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'application/json, text/plain, */*',
+  'Accept-Language': 'ko-KR,ko;q=0.9',
+  'Referer': 'https://m.stock.naver.com/',
+  'Origin': 'https://m.stock.naver.com',
+};
+
+function parseNaverPrice(d: Record<string, unknown>): number {
+  // Naver Finance 응답 필드명 다중 fallback
+  const raw = d.closePrice ?? d.stockPrice ?? d.price ?? d.nv ?? d.cv ?? d.lastPrice;
+  const p = Number(String(raw ?? '').replace(/,/g, ''));
+  return isNaN(p) ? 0 : p;
+}
+
+function parseNaverRate(d: Record<string, unknown>): number {
+  const raw = d.fluctuationsRatio ?? d.priceChangeRate ?? d.changeRate ?? 0;
+  return Number(String(raw).replace(/[^0-9.-]/g, '')) || 0;
+}
+
 // Naver Finance fallback — KIS가 처리 못하는 특수 티커(0064K0 등) 대응
 async function fetchNaverStockPrice(ticker: string) {
-  const res = await fetch(
+  // /basic → /integration 순 시도 (ETF 특수 형식 대응)
+  const endpoints = [
     `https://m.stock.naver.com/api/stock/${encodeURIComponent(ticker)}/basic`,
-    { headers: { 'User-Agent': 'Mozilla/5.0 (compatible)' }, cache: 'no-store' }
-  );
-  if (!res.ok) throw new Error(`Naver HTTP ${res.status}: ${ticker}`);
-  const d = await res.json();
-  const price = Number(String(d.closePrice ?? '').replace(/,/g, ''));
-  if (!price || price <= 0) throw new Error(`Naver: zero price for ${ticker}`);
-  return {
-    ticker,
-    price,
-    changeRate: Number(d.fluctuationsRatio ?? 0),
-    change: Number(String(d.compareToPreviousClosePrice ?? '').replace(/,/g, '')),
-    volume: 0, high: 0, low: 0, open: 0,
-  };
+    `https://m.stock.naver.com/api/stock/${encodeURIComponent(ticker)}/integration`,
+  ];
+
+  let lastErr: unknown;
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, { headers: NAVER_HEADERS, cache: 'no-store' });
+      if (!res.ok) { lastErr = new Error(`Naver HTTP ${res.status}`); continue; }
+      const d: Record<string, unknown> = await res.json();
+
+      // /integration 응답은 stockInfo 하위에 있을 수 있음
+      const target = (d.stockInfo as Record<string, unknown>) ?? d;
+      const price = parseNaverPrice(target);
+      if (!price || price <= 0) {
+        console.warn(`[Naver] ${ticker} price=0, raw keys: ${Object.keys(target).join(',')}`);
+        lastErr = new Error(`Naver: zero price for ${ticker}`);
+        continue;
+      }
+      return { ticker, price, changeRate: parseNaverRate(target), change: 0, volume: 0, high: 0, low: 0, open: 0 };
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
 }
 
 // J=KOSPI → Q=KOSDAQ → Naver Finance 순 시도

@@ -1,6 +1,6 @@
 'use client';
 import { useAssetStore } from '@/lib/store';
-import { calcInvestmentStats, formatKRW, formatPercent } from '@/lib/utils';
+import { calcInvestmentStats, formatKRWFull, formatPercent } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface Props { filteredIds?: string[] }
@@ -28,9 +28,9 @@ export default function StockPortfolioHeader({ filteredIds }: Props) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <SummaryCard label="총 평가금액" value={formatKRW(totalCurrent)} sub={`투자 ${formatKRW(totalInvested)}`} color="text-white" />
+      <SummaryCard label="총 평가금액" value={formatKRWFull(totalCurrent)} sub={`투자 ${formatKRWFull(totalInvested)}`} color="text-white" />
       <SummaryCard
-        label="총 수익" value={`${totalProfit >= 0 ? '+' : ''}${formatKRW(totalProfit)}`}
+        label="총 수익" value={`${totalProfit >= 0 ? '+' : ''}${formatKRWFull(totalProfit)}`}
         sub={formatPercent(totalROI)} color={totalProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}
         up={totalProfit >= 0}
       />
@@ -40,7 +40,7 @@ export default function StockPortfolioHeader({ filteredIds }: Props) {
         up={totalROI >= 0}
       />
       <SummaryCard
-        label="일간 수익" value={`${totalDaily >= 0 ? '+' : ''}${formatKRW(totalDaily)}`}
+        label="일간 수익" value={`${totalDaily >= 0 ? '+' : ''}${formatKRWFull(totalDaily)}`}
         sub="오늘 기준" color={totalDaily >= 0 ? 'text-emerald-400' : 'text-red-400'}
         up={totalDaily >= 0}
       />

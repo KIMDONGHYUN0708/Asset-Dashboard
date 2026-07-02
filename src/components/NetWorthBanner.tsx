@@ -79,11 +79,11 @@ export default function NetWorthBanner() {
 
         {/* 요약 스탯 */}
         <div className="flex items-stretch gap-3">
-          <StatCard label="투자 자산" value={formatKRW(investTotal)} accent="blue" />
+          <StatCard label="투자 자산" value={formatKRWFull(investTotal)} accent="blue" />
           <div className="w-px bg-white/[0.06]" />
-          <StatCard label="예·적금" value={formatKRW(savingsTotal)} accent="violet" />
+          <StatCard label="예·적금" value={formatKRWFull(savingsTotal)} accent="violet" />
           <div className="w-px bg-white/[0.06]" />
-          <StatCard label="대출" value={`-${formatKRW(loanTotal)}`} accent="red" />
+          <StatCard label="대출" value={`-${formatKRWFull(loanTotal)}`} accent="red" />
         </div>
       </div>
     </div>
@@ -112,8 +112,8 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
   };
   return (
     <div className="text-center px-4">
-      <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">{label}</p>
-      <p className={`text-xl font-bold ${colors[accent]} tabular-nums`}>{value}</p>
+      <p className="text-[10px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">{label}</p>
+      <p className={`text-[14px] font-bold ${colors[accent]} tabular-nums`}>{value}</p>
     </div>
   );
 }

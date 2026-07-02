@@ -141,6 +141,7 @@ export default function InvestmentSettings() {
   const [newTx, setNewTx] = useState<Record<string, Omit<Transaction, 'id'>>>({});
   const [priceFetching, setPriceFetching] = useState<Record<string, boolean>>({});
   const [priceMsg, setPriceMsg] = useState<Record<string, string>>({});
+  const [editTx, setEditTx] = useState<Record<string, Record<string, Transaction>>>({}); // invId → txId → tx
 
   const startEdit = (inv: Investment) =>
     setEditing(p => ({ ...p, [inv.id]: { ...inv, transactions: [...(inv.transactions ?? [])] } }));
@@ -262,6 +263,36 @@ export default function InvestmentSettings() {
       const totalInv = txs.reduce((s, t) => s + t.price * t.quantity, 0);
       return { ...p, [invId]: { ...cur, transactions: txs, quantity: totalQty, purchasePrice: txs.length > 0 ? Math.round(totalInv / totalQty) : 0 } };
     });
+  };
+
+  const startEditTx = (invId: string, tx: Transaction) =>
+    setEditTx(p => ({ ...p, [invId]: { ...(p[invId] ?? {}), [tx.id]: { ...tx } } }));
+
+  const cancelEditTx = (invId: string, txId: string) =>
+    setEditTx(p => {
+      const inner = { ...(p[invId] ?? {}) };
+      delete inner[txId];
+      return { ...p, [invId]: inner };
+    });
+
+  const updateEditTx = (invId: string, txId: string, field: keyof Transaction, value: unknown) =>
+    setEditTx(p => ({
+      ...p,
+      [invId]: { ...(p[invId] ?? {}), [txId]: { ...(p[invId]?.[txId] as Transaction), [field]: value } },
+    }));
+
+  const saveEditTx = (invId: string, txId: string) => {
+    const tx = editTx[invId]?.[txId];
+    if (!tx) return;
+    setEditing(p => {
+      const cur = p[invId];
+      if (!cur) return p;
+      const txs = (cur.transactions ?? []).map(t => t.id === txId ? tx : t);
+      const totalQty = txs.reduce((s, t) => s + t.quantity, 0);
+      const totalInv = txs.reduce((s, t) => s + t.price * t.quantity, 0);
+      return { ...p, [invId]: { ...cur, transactions: txs, quantity: totalQty, purchasePrice: totalQty > 0 ? Math.round(totalInv / totalQty) : 0 } };
+    });
+    cancelEditTx(invId, txId);
   };
 
   const TYPE_GROUPS = [
@@ -548,16 +579,65 @@ export default function InvestmentSettings() {
                             </button>
                             {isTxOpen && (
                               <div className="mt-2 space-y-2">
-                                {txs.map((tx, i) => (
-                                  <div key={tx.id} className="flex items-center gap-2 p-2 rounded-lg bg-slate-700/40">
-                                    <span className="w-5 h-5 rounded bg-blue-500/10 text-blue-400 text-xs flex items-center justify-center font-bold flex-shrink-0">{i + 1}</span>
-                                    <span className="text-xs text-slate-400 w-20 flex-shrink-0">{tx.date}</span>
-                                    <span className="text-xs text-white">{tx.quantity.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}</span>
-                                    <span className="text-xs text-white">@ {formatKRW(tx.price)}</span>
-                                    {tx.note && <span className="text-xs text-slate-500 flex-1 truncate">{tx.note}</span>}
-                                    <button onClick={() => deleteTx(inv.id, tx.id)} className="ml-auto text-slate-600 hover:text-red-400 text-xs">✕</button>
-                                  </div>
-                                ))}
+                                {txs.map((tx, i) => {
+                                  const txEd = editTx[inv.id]?.[tx.id];
+                                  if (txEd) {
+                                    return (
+                                      <div key={tx.id} className="p-2 rounded-lg bg-slate-700/60 border border-blue-500/20 space-y-2">
+                                        <p className="text-xs text-blue-400 font-medium">{i + 1}회차 수정</p>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                          <div>
+                                            <label className="text-xs text-slate-500 block mb-0.5">매수일</label>
+                                            <Input type="date" value={txEd.date}
+                                              onChange={e => updateEditTx(inv.id, tx.id, 'date', e.target.value)} />
+                                          </div>
+                                          <div>
+                                            <label className="text-xs text-slate-500 block mb-0.5">수량</label>
+                                            <Input type="number" step="any" value={txEd.quantity || ''}
+                                              onChange={e => updateEditTx(inv.id, tx.id, 'quantity', Number(e.target.value))} />
+                                          </div>
+                                          <div>
+                                            <label className="text-xs text-slate-500 block mb-0.5">매수가 (원)</label>
+                                            <Input type="number" value={txEd.price || ''}
+                                              onChange={e => updateEditTx(inv.id, tx.id, 'price', Number(e.target.value))} />
+                                          </div>
+                                          <div>
+                                            <label className="text-xs text-slate-500 block mb-0.5">메모</label>
+                                            <Input value={txEd.note ?? ''}
+                                              onChange={e => updateEditTx(inv.id, tx.id, 'note', e.target.value)} />
+                                          </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                          <button onClick={() => saveEditTx(inv.id, tx.id)}
+                                            className="px-3 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600">
+                                            저장
+                                          </button>
+                                          <button onClick={() => cancelEditTx(inv.id, tx.id)}
+                                            className="px-3 py-1 text-slate-400 text-xs rounded-lg hover:bg-slate-700">
+                                            취소
+                                          </button>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  return (
+                                    <div key={tx.id}
+                                      className="flex items-center gap-2 p-2 rounded-lg bg-slate-700/40 hover:bg-slate-700/60 cursor-pointer group"
+                                      onClick={() => startEditTx(inv.id, tx)}
+                                    >
+                                      <span className="w-5 h-5 rounded bg-blue-500/10 text-blue-400 text-xs flex items-center justify-center font-bold flex-shrink-0">{i + 1}</span>
+                                      <span className="text-xs text-slate-400 w-20 flex-shrink-0">{tx.date}</span>
+                                      <span className="text-xs text-white">{tx.quantity.toLocaleString()}{inv.type === 'gold' ? '돈' : inv.type === 'stock' ? '주' : '개'}</span>
+                                      <span className="text-xs text-white">@ {formatKRW(tx.price)}</span>
+                                      {tx.note && <span className="text-xs text-slate-500 flex-1 truncate">{tx.note}</span>}
+                                      <span className="ml-auto text-xs text-slate-600 group-hover:text-slate-400 flex-shrink-0">수정</span>
+                                      <button
+                                        onClick={e => { e.stopPropagation(); deleteTx(inv.id, tx.id); }}
+                                        className="text-slate-600 hover:text-red-400 text-xs flex-shrink-0"
+                                      >✕</button>
+                                    </div>
+                                  );
+                                })}
                                 <div className="p-2 rounded-lg bg-blue-500/5 border border-blue-500/20 space-y-2">
                                   <p className="text-xs text-blue-400 font-medium">+ 매수 이력 추가</p>
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
